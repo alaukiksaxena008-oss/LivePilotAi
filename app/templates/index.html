@@ -961,15 +961,18 @@
     }
 
     // Form Autofill Automation
+    let publicPortalUrl = "https://fort-relations-already-yorkshire.trycloudflare.com";
+
     async function runScholarshipAutofill() {
       openGoalModal();
-      document.getElementById("agent-input").value = `Auto-fill my application on http://localhost:9000/scholarship using my saved profile`;
+      document.getElementById("agent-input").value = `Auto-fill my application on ${publicPortalUrl}/scholarship using my saved profile`;
       handleAgentSubmit(new Event('submit'));
     }
 
     function runTaskWithAgent(title, url) {
       openGoalModal();
-      document.getElementById("agent-input").value = `Execute task: "${title}" on ${url}`;
+      const target = url || `${publicPortalUrl}`;
+      document.getElementById("agent-input").value = `Execute task: "${title}" on ${target}`;
       handleAgentSubmit(new Event('submit'));
     }
 
