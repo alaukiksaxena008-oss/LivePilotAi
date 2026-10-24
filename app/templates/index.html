@@ -1251,12 +1251,13 @@
 
     // Agent Goal Execution
     async function handleAgentSubmit(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const input = document.getElementById("agent-input");
       const text = input.value.trim();
       if (!text) return;
       input.value = "";
 
+      const userId = (currentUser && currentUser.id) ? currentUser.id : "riya";
       appendChatMessage("user", text);
       const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5 text-slate-600"><span class="w-1.5 h-1.5 rounded-full bg-[#0E7979] animate-ping"></span> LifePilot AI is planning and executing tools...</span>`);
 
@@ -1264,17 +1265,22 @@
         const res = await fetch("/goals", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, user_id: currentUser.id })
+          body: JSON.stringify({ text, user_id: userId })
         });
         const data = await res.json();
         activeGoalId = data.goal_id;
 
-        loadingEl.remove();
+        if (loadingEl && loadingEl.remove) loadingEl.remove();
         renderGoalResult(data);
         refreshMonitors();
         loadToolAudit();
       } catch (err) {
-        loadingEl.innerHTML = `<span class="text-rose-600">Execution Error: ${err.message}</span>`;
+        if (loadingEl) {
+          const contentEl = loadingEl.querySelector('.chat-bubble-content');
+          if (contentEl) {
+            contentEl.innerHTML = `<span class="text-rose-600 font-semibold">Execution Error: ${err.message}</span>`;
+          }
+        }
       }
     }
 
@@ -1327,12 +1333,17 @@
           body: JSON.stringify({ text })
         });
         const data = await res.json();
-        loadingEl.remove();
+        if (loadingEl && loadingEl.remove) loadingEl.remove();
         renderGoalResult(data);
         refreshMonitors();
         loadToolAudit();
       } catch (err) {
-        loadingEl.innerHTML = `<span class="text-rose-600">Error: ${err.message}</span>`;
+        if (loadingEl) {
+          const contentEl = loadingEl.querySelector('.chat-bubble-content');
+          if (contentEl) {
+            contentEl.innerHTML = `<span class="text-rose-600 font-semibold">Error: ${err.message}</span>`;
+          }
+        }
       }
     }
 
@@ -1340,13 +1351,14 @@
       const container = document.getElementById("chat-messages");
       const div = document.createElement("div");
       div.className = `flex items-start gap-2.5 ${sender === 'user' ? 'justify-end' : ''}`;
+      const avatarText = (currentUser && currentUser.avatar) ? currentUser.avatar : 'RS';
       if (sender === 'user') {
         div.innerHTML = `
-          <div class="bg-[#0E7979] text-white rounded-2xl rounded-tr-sm p-3 leading-relaxed max-w-[85%] text-xs shadow-xs">
+          <div class="chat-bubble-content bg-[#0E7979] text-white rounded-2xl rounded-tr-sm p-3 leading-relaxed max-w-[85%] text-xs shadow-xs">
             ${content}
           </div>
           <div class="w-7 h-7 rounded-lg bg-slate-700 text-white font-bold flex items-center justify-center text-xs shrink-0">
-            ${currentUser.avatar}
+            ${avatarText}
           </div>
         `;
       } else {
@@ -1354,14 +1366,14 @@
           <div class="w-7 h-7 rounded-lg bg-[#e6f5f5] text-[#0E7979] font-bold flex items-center justify-center text-xs shrink-0">
             AI
           </div>
-          <div class="bg-slate-200/60 rounded-2xl rounded-tl-sm p-3 text-slate-800 leading-relaxed max-w-[85%] text-xs">
+          <div class="chat-bubble-content bg-slate-200/60 rounded-2xl rounded-tl-sm p-3 text-slate-800 leading-relaxed max-w-[85%] text-xs">
             ${content}
           </div>
         `;
       }
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
-      return div.querySelector(sender === 'user' ? '.bg-[#0E7979]' : '.bg-slate-200\\/60');
+      return div;
     }
 
     // Refresh Monitors
