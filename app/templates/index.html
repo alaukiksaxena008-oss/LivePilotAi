@@ -1054,6 +1054,9 @@
     }
 
     function applyUserChange() {
+      if (!currentUser) return;
+      sessionStorage.setItem("lifepilot_user", JSON.stringify(currentUser));
+
       document.getElementById("user-name").textContent = currentUser.name;
       document.getElementById("user-role").textContent = currentUser.role;
       document.getElementById("user-avatar").textContent = currentUser.avatar;
@@ -1062,11 +1065,19 @@
       document.getElementById("hero-greeting").textContent = `Good morning, ${currentUser.name.split(' ')[0]} 👋`;
       document.getElementById("chat-active-user-name").textContent = currentUser.name;
 
+      // Reset any active goal / OTP states
+      activeGoalId = null;
+      const otpContainer = document.getElementById("otp-container");
+      if (otpContainer) otpContainer.classList.add("hidden");
+      const otpInput = document.getElementById("otp-input");
+      if (otpInput) otpInput.value = "";
+
       loadUserProfile();
       loadUserTasks();
       refreshMonitors();
       loadVaultItems();
       loadChatHistory();
+      loadToolAudit();
     }
 
     // Global Caches for Instant Live Search
@@ -1293,15 +1304,16 @@
       }
     }
 
-    // Activity & Execution History Log
+    // Activity & Execution History Log (Scoped per Active User)
     async function loadToolAudit() {
+      if (!currentUser) return;
       try {
-        const res = await fetch(`/tools/audit`);
+        const res = await fetch(`/tools/audit?user_id=${currentUser.id}`);
         const rows = await res.json();
         const tbody = document.getElementById("tool-audit-tbody");
         if (!tbody) return;
         if (!rows || rows.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400 font-sans">No activity recorded yet. Give the agent a task in the console to get started.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400 font-sans">No activity recorded yet for ${escapeHtml(currentUser.name)}. Give the agent a task in the console to get started.</td></tr>`;
           return;
         }
         tbody.innerHTML = rows.map(r => {
@@ -1360,20 +1372,23 @@
       }
     }
 
-    // Persistent Chat Memory
+    // Persistent Chat Memory (Scoped per Active User)
     async function loadChatHistory() {
+      if (!currentUser) return;
       try {
         const res = await fetch(`/chat/history?user_id=${currentUser.id}`);
         const history = await res.json();
         const container = document.getElementById("chat-messages");
-        if (history.length > 0) {
+        if (!container) return;
+
+        if (history && history.length > 0) {
           container.innerHTML = history.map(m => `
             <div class="flex items-start gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}">
               ${m.role === 'user' ? '' : `<div class="w-7 h-7 rounded-lg bg-[#e6f5f5] text-[#0E7979] font-bold flex items-center justify-center text-xs shrink-0">AI</div>`}
               <div class="${m.role === 'user' ? 'bg-[#0E7979] text-white rounded-tr-sm' : 'bg-slate-200/60 text-slate-800 rounded-tl-sm'} rounded-2xl p-3 leading-relaxed max-w-[85%] text-xs">
                 ${m.steps && m.steps.length > 0 ? `
                   <div class="mb-2 space-y-1 border-b border-slate-300 pb-1.5">
-                    ${m.steps.map(st => `<div class="text-[10px] text-slate-500 font-mono">⚡ ${st.tool}</div>`).join('')}
+                    ${m.steps.map(st => `<div class="text-[10px] text-slate-500 font-mono">⚡ ${escapeHtml(st.tool)}</div>`).join('')}
                   </div>
                 ` : ''}
                 ${escapeHtml(m.content)}
@@ -1382,6 +1397,18 @@
             </div>
           `).join('');
           container.scrollTop = container.scrollHeight;
+        } else {
+          // Empty clean state for user with no chat history
+          container.innerHTML = `
+            <div class="flex items-start gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-[#e6f5f5] text-[#0E7979] font-bold flex items-center justify-center text-xs shrink-0">
+                AI
+              </div>
+              <div class="bg-slate-200/60 rounded-2xl rounded-tl-sm p-3 text-slate-700 leading-relaxed max-w-[85%]">
+                Hello ${escapeHtml(currentUser.name)}! I have your profile and credentials loaded. Tell me any life admin goal (e.g. <i>"Auto-fill scholarship on [URL]"</i>, <i>"Track refund on [URL]"</i>, or <i>"Check passport status"</i>).
+              </div>
+            </div>
+          `;
         }
       } catch (e) {
         console.error("Chat load err:", e);
