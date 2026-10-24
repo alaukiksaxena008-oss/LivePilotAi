@@ -129,7 +129,7 @@
   <div id="app-shell" class="hidden min-h-screen flex w-full">
 
   <!-- ==================== SIDEBAR ==================== -->
-  <aside class="w-64 card border-r border-slate-200/80 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
+  <aside class="w-72 card border-r border-slate-200/80 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
     <div>
       <!-- Brand Logo -->
       <div class="flex items-center gap-2.5 px-2 py-3 mb-6">
@@ -144,25 +144,23 @@
 
       <!-- Navigation Section -->
       <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Agent Center</div>
-      <nav class="space-y-1">
+      <nav class="space-y-1.5">
         <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-[#e6f5f5] text-[#0E7979]">
-          <i data-lucide="layout-grid" class="w-4 h-4"></i>
-          <span>Command Center</span>
+          <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
+          <span class="whitespace-nowrap">Command Center</span>
         </button>
         <button onclick="switchTab('profile')" id="nav-profile" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
-          <i data-lucide="user-check" class="w-4 h-4 text-slate-400"></i>
-          <span>User Profile & Info</span>
+          <i data-lucide="user-check" class="w-4 h-4 shrink-0 text-slate-400"></i>
+          <span class="whitespace-nowrap">User Profile & Info</span>
         </button>
-        <button onclick="switchTab('monitoring')" id="nav-monitoring" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
-          <div class="flex items-center gap-3">
-            <i data-lucide="activity" class="w-4 h-4 text-slate-400"></i>
-            <span>Background Monitors</span>
-          </div>
-          <span id="active-monitors-badge" class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full">0</span>
+        <button onclick="switchTab('monitoring')" id="nav-monitoring" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
+          <i data-lucide="activity" class="w-4 h-4 shrink-0 text-slate-400"></i>
+          <span class="whitespace-nowrap">Background Monitors</span>
+          <span id="active-monitors-badge" class="ml-auto text-[10px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full shrink-0">0</span>
         </button>
         <button onclick="switchTab('database')" id="nav-database" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
-          <i data-lucide="database" class="w-4 h-4 text-slate-400"></i>
-          <span>DB & Tool Audit</span>
+          <i data-lucide="database" class="w-4 h-4 shrink-0 text-slate-400"></i>
+          <span class="whitespace-nowrap">DB & Tool Audit</span>
         </button>
       </nav>
     </div>
