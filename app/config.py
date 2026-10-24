@@ -12,6 +12,7 @@ class Settings:
     anthropic_api_key: str
     hf_token: str
     groq_api_key: str
+    telegram_bot_token: str
     llm_provider: str
     llm_model: str
     agent_model: str
@@ -28,6 +29,7 @@ def get_settings() -> Settings:
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY", ""),
         hf_token=os.getenv("HF_TOKEN", ""),
         groq_api_key=os.getenv("GROQ_API_KEY", ""),
+        telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", ""),
         llm_provider=os.getenv("LLM_PROVIDER", "huggingface"),
         llm_model=os.getenv("LLM_MODEL", "openai/gpt-oss-120b"),
         agent_model=os.getenv("AGENT_MODEL", "claude-sonnet-5-5"),

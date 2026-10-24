@@ -102,3 +102,35 @@ def test_create_monitor_tool_saves_row_for_user():
 def test_create_monitor_tool_absent_without_db():
     tf = TinyFishClient("k", transport=httpx.MockTransport(lambda r: httpx.Response(200, json={})))
     assert "create_monitor" not in build_tools(tf, Budget(5, 2))
+
+
+def test_explain_changes_uses_llm_and_formats_output():
+    from types import SimpleNamespace
+
+    from app.monitors.explain import explain_changes
+
+    class FakeLLM:
+        async def create(self, **kwargs):
+            return SimpleNamespace(content=[{"type": "text", "text": "Your flight refund has arrived!"}])
+
+    monitor = {"url": "https://airline.com", "goal": "watch refund"}
+    changes = [{"field": "status", "old": "Initiated", "new": "Credited"}]
+
+    res = asyncio.run(explain_changes(monitor, changes, FakeLLM(), "test-model"))
+    assert "Your flight refund has arrived!" in res
+    assert "status: Initiated → Credited" in res
+
+
+def test_explain_changes_falls_back_on_error():
+    from app.monitors.explain import explain_changes
+
+    class FailingLLM:
+        async def create(self, **kwargs):
+            raise RuntimeError("API down")
+
+    monitor = {"url": "https://airline.com", "goal": "watch refund"}
+    changes = [{"field": "status", "old": "Initiated", "new": "Credited"}]
+
+    res = asyncio.run(explain_changes(monitor, changes, FailingLLM(), "test-model"))
+    assert "Change detected on https://airline.com" in res
+    assert "status: Initiated → Credited" in res

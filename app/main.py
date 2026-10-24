@@ -6,13 +6,15 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from app.agent.llm import make_llm
-from app.agent.loop import resume_goal, run_goal
+from app.agent.loop import GoalResult, resume_goal, run_goal
 from app.agent.tools import Budget, build_tools
 from app.config import get_settings
 from app.db import DB
+from app.monitors.explain import explain_changes
 from app.monitors.runner import run_monitor
 from app.monitors.scheduler import scheduler_loop
 from app.notify import send_alert
+from app.telegram_bot import telegram_polling_loop
 from app.tinyfish.client import TinyFishClient
 
 
@@ -23,9 +25,25 @@ async def lifespan(app: FastAPI):
     app.state.db = DB(s.db_path)
     app.state.tf = TinyFishClient(s.tinyfish_api_key)
     app.state.goals = {}  # goal_id -> {"result", "budget", "tools", "kw"}
-    task = asyncio.create_task(scheduler_loop(app.state.db, app.state.tf, send_alert, tick=s.scheduler_tick))
+
+    llm, model = make_llm(s)
+
+    async def _explain(m, changes):
+        return await explain_changes(m, changes, llm, model)
+
+    scheduler_task = asyncio.create_task(
+        scheduler_loop(app.state.db, app.state.tf, send_alert, explain=_explain, tick=s.scheduler_tick)
+    )
+
+    bot_task = None
+    if s.telegram_bot_token:
+        bot_task = asyncio.create_task(telegram_polling_loop(app.state.db, app.state.tf, s))
+
     yield
-    task.cancel()
+
+    scheduler_task.cancel()
+    if bot_task:
+        bot_task.cancel()
     await app.state.tf.aclose()
 
 
@@ -59,20 +77,55 @@ async def create_goal(body: GoalIn):
     kw = dict(llm=llm, model=model, tools=tools, budget=budget, result_char_limit=s.tool_result_char_limit)
     result = await run_goal(body.text, **kw)
     goal_id = uuid.uuid4().hex[:8]
+    db.save_goal(goal_id, body.user_id, body.text, result, budget)
     if result.status == "waiting_for_user":
-        app.state.goals[goal_id] = {"result": result, "kw": kw}
+        app.state.goals[goal_id] = {"result": result, "kw": kw, "user_id": body.user_id, "goal_text": body.text}
     return _payload(goal_id, result)
 
 
 @app.post("/goals/{goal_id}/reply")
 async def reply_goal(goal_id: str, body: ReplyIn):
+    s, tf, db = app.state.settings, app.state.tf, app.state.db
     saved = app.state.goals.pop(goal_id, None)
+
+    # If not in memory (e.g. server restarted), restore from database
     if not saved:
-        raise HTTPException(404, "No paused goal with that id")
+        rec = db.get_goal(goal_id)
+        if not rec or rec["status"] != "waiting_for_user":
+            raise HTTPException(404, "No paused goal with that id")
+        llm, model = make_llm(s)
+        budget = Budget(
+            s.max_steps,
+            s.max_agent_runs,
+            steps=rec.get("budget_steps", 0),
+            agent_runs=rec.get("budget_agent_runs", 0),
+        )
+        tools = build_tools(tf, budget, db=db, user_id=rec["user_id"])
+        kw = dict(llm=llm, model=model, tools=tools, budget=budget, result_char_limit=s.tool_result_char_limit)
+        prev_result = GoalResult(
+            status=rec["status"],
+            answer=rec.get("answer"),
+            question=rec.get("question"),
+            pending_tool_use_id=rec.get("pending_tool_use_id"),
+            messages=rec.get("messages", []),
+            steps=rec.get("steps", []),
+        )
+        saved = {"result": prev_result, "kw": kw, "user_id": rec["user_id"], "goal_text": rec["goal_text"]}
+
     result = await resume_goal(saved["result"], body.text, **saved["kw"])
+    db.save_goal(goal_id, saved["user_id"], saved["goal_text"], result, saved["kw"]["budget"])
     if result.status == "waiting_for_user":
-        app.state.goals[goal_id] = {"result": result, "kw": saved["kw"]}
+        saved["result"] = result
+        app.state.goals[goal_id] = saved
     return _payload(goal_id, result)
+
+
+@app.get("/goals/{goal_id}")
+async def get_goal(goal_id: str):
+    rec = app.state.db.get_goal(goal_id)
+    if not rec:
+        raise HTTPException(404, "No such goal")
+    return rec
 
 
 @app.get("/monitors")

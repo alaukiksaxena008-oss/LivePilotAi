@@ -33,7 +33,23 @@ CREATE TABLE IF NOT EXISTS alerts (
   message TEXT NOT NULL,
   created_at REAL NOT NULL
 );
+CREATE TABLE IF NOT EXISTS goals (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  goal_text TEXT NOT NULL,
+  status TEXT NOT NULL,
+  answer TEXT,
+  question TEXT,
+  pending_tool_use_id TEXT,
+  messages TEXT NOT NULL,
+  steps TEXT NOT NULL,
+  budget_steps INTEGER NOT NULL,
+  budget_agent_runs INTEGER NOT NULL,
+  created_at REAL NOT NULL,
+  updated_at REAL NOT NULL
+);
 CREATE INDEX IF NOT EXISTS idx_snap ON snapshots(monitor_id, id);
+CREATE INDEX IF NOT EXISTS idx_goals_user ON goals(user_id, status);
 """
 
 
@@ -114,3 +130,66 @@ class DB:
         else:
             rows = self._run("SELECT * FROM alerts ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
         return [dict(r) for r in rows]
+
+    # goals
+    def save_goal(
+        self,
+        goal_id: str,
+        user_id: str,
+        goal_text: str,
+        result: Any,
+        budget: Any,
+    ) -> None:
+        now = time.time()
+        self._run(
+            """INSERT INTO goals (id, user_id, goal_text, status, answer, question, pending_tool_use_id,
+                                  messages, steps, budget_steps, budget_agent_runs, created_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET
+                 status=excluded.status,
+                 answer=excluded.answer,
+                 question=excluded.question,
+                 pending_tool_use_id=excluded.pending_tool_use_id,
+                 messages=excluded.messages,
+                 steps=excluded.steps,
+                 budget_steps=excluded.budget_steps,
+                 budget_agent_runs=excluded.budget_agent_runs,
+                 updated_at=excluded.updated_at
+            """,
+            (
+                goal_id,
+                user_id,
+                goal_text,
+                result.status,
+                result.answer,
+                result.question,
+                result.pending_tool_use_id,
+                json.dumps(result.messages),
+                json.dumps(result.steps),
+                budget.steps,
+                budget.agent_runs,
+                now,
+                now,
+            ),
+        )
+
+    def get_goal(self, goal_id: str) -> dict | None:
+        row = self._run("SELECT * FROM goals WHERE id=?", (goal_id,)).fetchone()
+        if not row:
+            return None
+        d = dict(row)
+        d["messages"] = json.loads(d["messages"]) if d["messages"] else []
+        d["steps"] = json.loads(d["steps"]) if d["steps"] else []
+        return d
+
+    def active_waiting_goal(self, user_id: str) -> dict | None:
+        row = self._run(
+            "SELECT * FROM goals WHERE user_id=? AND status='waiting_for_user' ORDER BY updated_at DESC LIMIT 1",
+            (user_id,),
+        ).fetchone()
+        if not row:
+            return None
+        d = dict(row)
+        d["messages"] = json.loads(d["messages"]) if d["messages"] else []
+        d["steps"] = json.loads(d["steps"]) if d["steps"] else []
+        return d
