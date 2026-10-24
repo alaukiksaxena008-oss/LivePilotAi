@@ -185,9 +185,9 @@
           <div id="user-avatar" class="w-8 h-8 rounded-full bg-[#0E7979] text-white font-bold text-xs flex items-center justify-center shadow-xs">
             RS
           </div>
-          <div class="text-left">
-            <p id="user-name" class="text-xs font-bold text-slate-900 leading-none">Riya Sharma</p>
-            <p id="user-role" class="text-[11px] text-slate-500 mt-0.5 truncate max-w-[120px]">Software Engineer</p>
+          <div class="text-left min-w-0 flex-1">
+            <p id="user-name" class="text-xs font-bold text-slate-900 leading-none truncate">Riya Sharma</p>
+            <p id="user-role" class="text-[11px] text-slate-500 mt-1 truncate">Software Engineer in Delhi</p>
           </div>
         </div>
         <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
@@ -260,45 +260,45 @@
         </div>
 
         <!-- 4 Stat Counters -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-[#e6f5f5] flex items-center justify-center text-[#0E7979] shrink-0 font-bold">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="card p-5 rounded-2xl shadow-xs flex items-center gap-4 min-w-0">
+            <div class="w-12 h-12 rounded-xl bg-[#e6f5f5] flex items-center justify-center text-[#0E7979] shrink-0 font-bold">
               <i data-lucide="list-checks" class="w-5 h-5"></i>
             </div>
-            <div>
-              <p id="stat-tasks-count" class="text-2xl font-extrabold text-slate-900 leading-none">04</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Pending Priorities</p>
-              <p class="text-[11px] text-slate-400">Tracked in SQLite</p>
+            <div class="min-w-0 flex-1">
+              <p id="stat-tasks-count" class="text-2xl font-extrabold text-slate-900 leading-tight">04</p>
+              <p class="text-xs font-bold text-slate-800 truncate">Pending Priorities</p>
+              <p class="text-[11px] text-slate-500 truncate">Tracked in SQLite</p>
             </div>
           </div>
-          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0 font-bold">
+          <div class="card p-5 rounded-2xl shadow-xs flex items-center gap-4 min-w-0">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0 font-bold">
               <i data-lucide="clock" class="w-5 h-5"></i>
             </div>
-            <div>
-              <p id="stat-urgent-count" class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Urgent Deadlines</p>
-              <p class="text-[11px] text-rose-500 font-medium">Require action today</p>
+            <div class="min-w-0 flex-1">
+              <p id="stat-urgent-count" class="text-2xl font-extrabold text-slate-900 leading-tight">02</p>
+              <p class="text-xs font-bold text-slate-800 truncate">Urgent Deadlines</p>
+              <p class="text-[11px] text-rose-600 font-medium truncate">Require action today</p>
             </div>
           </div>
-          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center text-[#0E7979] shrink-0 font-bold">
+          <div class="card p-5 rounded-2xl shadow-xs flex items-center gap-4 min-w-0">
+            <div class="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center text-[#0E7979] shrink-0 font-bold">
               <i data-lucide="eye" class="w-5 h-5"></i>
             </div>
-            <div>
-              <p id="stat-monitors-count" class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Active Monitors</p>
-              <p class="text-[11px] text-emerald-600 font-medium">Checking automatically</p>
+            <div class="min-w-0 flex-1">
+              <p id="stat-monitors-count" class="text-2xl font-extrabold text-slate-900 leading-tight">02</p>
+              <p class="text-xs font-bold text-slate-800 truncate">Active Monitors</p>
+              <p class="text-[11px] text-emerald-600 font-medium truncate">Checking automatically</p>
             </div>
           </div>
-          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 font-bold">
+          <div class="card p-5 rounded-2xl shadow-xs flex items-center gap-4 min-w-0">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 font-bold">
               <i data-lucide="shield-check" class="w-5 h-5"></i>
             </div>
-            <div>
-              <p id="stat-vault-count" class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Vault Credentials</p>
-              <p class="text-[11px] text-slate-400">Encrypted in DB</p>
+            <div class="min-w-0 flex-1">
+              <p id="stat-vault-count" class="text-2xl font-extrabold text-slate-900 leading-tight">02</p>
+              <p class="text-xs font-bold text-slate-800 truncate">Vault Credentials</p>
+              <p class="text-[11px] text-slate-500 truncate">Encrypted in DB</p>
             </div>
           </div>
         </div>
@@ -326,7 +326,7 @@
             </div>
 
             <div class="pt-4 border-t border-slate-200/80 mt-4 flex items-center justify-between text-xs text-slate-500">
-              <span>Sort: Priority order (URGENT $\to$ HIGH $\to$ MEDIUM $\to$ LOW)</span>
+              <span>Sort: Priority order (URGENT → HIGH → MEDIUM → LOW)</span>
               <button onclick="loadUserTasks()" class="text-[#0E7979] hover:underline flex items-center gap-1 font-semibold">
                 <i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync Tasks
               </button>
@@ -470,14 +470,6 @@
                 <p class="text-xs text-slate-500">Logins saved for autonomous portal access</p>
               </div>
               <button onclick="openAddVaultModal()" class="text-xs font-semibold text-[#0E7979] hover:underline">+ Add Login</button>
-            </div>
-
-            <div id="vault-items-list" class="space-y-3">
-              <p class="text-xs text-slate-400">Loading credentials...</p>
-            </div>
-          </div>
-        </div>
-      </section>
             </div>
 
             <div id="vault-items-list" class="space-y-3">
@@ -1050,13 +1042,15 @@
                   <option value="LOW" ${t.priority === 'LOW' ? 'selected' : ''}>⚪ LOW</option>
                 </select>
 
-                ${t.target_url ? `
-                  <button onclick="runTaskWithAgent('${escapeHtml(t.title)}', '${escapeHtml(t.target_url)}')" class="p-1.5 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white" title="Execute with LifePilot AI">
-                    <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                  </button>
-                ` : ''}
+                <div class="w-7 h-7 flex items-center justify-center">
+                  ${t.target_url ? `
+                    <button onclick="runTaskWithAgent('${escapeHtml(t.title)}', '${escapeHtml(t.target_url)}')" class="w-7 h-7 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white flex items-center justify-center" title="Execute with LifePilot AI">
+                      <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                    </button>
+                  ` : ''}
+                </div>
 
-                <button onclick="deleteTaskItem(${t.id})" class="p-1 text-slate-400 hover:text-rose-600 rounded">
+                <button onclick="deleteTaskItem(${t.id})" class="w-7 h-7 text-slate-400 hover:text-rose-600 rounded flex items-center justify-center" title="Delete task">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
