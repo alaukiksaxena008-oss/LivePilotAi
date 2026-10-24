@@ -81,7 +81,7 @@ def scholarship_portal(
     cgpa: str | None = None,
 ):
     if full_name and email and college:
-        return f"""<html><head><title>Scholarship Confirmation</title></head><body style="font-family:sans-serif;max-width:540px;margin:40px auto;background:#f8fafc;padding:24px;border-radius:12px;border:1px solid #e2e8f0">
+        return f"""<html><head><title>Scholarship Confirmation</title></head><body style="font-family:sans-serif;max-width:540px;margin:40px auto;background:#E5E6E5;padding:24px;border-radius:12px;border:1px solid #c7cac7">
 <div style="text-align:center;color:#0e7979"><h2>🎉 Application Submitted Successfully!</h2></div>
 <p style="font-size:14px;color:#334155">Your application for the <b>National Higher Education Scholarship 2026</b> has been received and logged.</p>
 <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0"/>
@@ -95,7 +95,7 @@ def scholarship_portal(
 <p style="font-size:12px;color:#64748b;margin-top:20px">Verification timestamp: {time.strftime('%d %b %Y, %H:%M')}. An alert has been dispatched to your registered LifePilot account.</p>
 </body></html>"""
     else:
-        return """<html><head><title>National Scholarship Application Portal</title></head><body style="font-family:sans-serif;max-width:540px;margin:40px auto;background:#f8fafc;padding:24px;border-radius:12px;border:1px solid #e2e8f0">
+        return """<html><head><title>National Scholarship Application Portal</title></head><body style="font-family:sans-serif;max-width:540px;margin:40px auto;background:#E5E6E5;padding:24px;border-radius:12px;border:1px solid #c7cac7">
 <h2 style="color:#0e7979;margin-top:0">National Higher Education Scholarship 2026</h2>
 <p style="font-size:13px;color:#64748b">Please enter your candidate details below to submit your application.</p>
 <form method="get" action="/scholarship" style="display:flex;flex-direction:column;gap:12px">
