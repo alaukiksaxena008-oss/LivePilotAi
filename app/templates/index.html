@@ -84,41 +84,62 @@
       <div class="border-t border-slate-200 pt-4 space-y-2.5">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Demo Accounts</span>
-          <span class="text-[10px] text-slate-400">Click to autofill credentials</span>
+          <span class="text-[10px] text-slate-400">Click to put credentials</span>
         </div>
-        <div class="space-y-1.5">
-          <button type="button" onclick="setGateCreds('riya@lifepilot.ai', 'password123')" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left">
-            <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-full bg-[#0E7979] text-white font-bold text-[11px] flex items-center justify-center">RS</span>
-              <div>
+        <div class="space-y-2">
+          <div onclick="setGateCreds('riya@lifepilot.ai', 'password123')" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left cursor-pointer group">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-7 h-7 rounded-full bg-[#0E7979] text-white font-bold text-[11px] flex items-center justify-center shrink-0">RS</span>
+              <div class="truncate">
                 <p class="text-xs font-bold text-slate-900 leading-tight">Riya Sharma (Slide 2 Persona)</p>
-                <p class="text-[10px] text-slate-500">riya@lifepilot.ai • password123</p>
+                <p class="text-[10px] text-slate-500 font-mono">riya@lifepilot.ai • password123</p>
               </div>
             </div>
-            <span class="text-[11px] text-[#0E7979] font-bold">Select →</span>
-          </button>
+            <div class="flex items-center gap-1.5 shrink-0 ml-2">
+              <button type="button" onclick="event.stopPropagation(); setGateCreds('riya@lifepilot.ai', 'password123', false)" class="text-[10px] font-semibold px-2 py-1 rounded-lg bg-white/80 hover:bg-white text-slate-700 border border-slate-200 shadow-xs" title="Put credentials into form">
+                Put Creds
+              </button>
+              <button type="button" onclick="event.stopPropagation(); setGateCreds('riya@lifepilot.ai', 'password123', true)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white shadow-xs">
+                Login →
+              </button>
+            </div>
+          </div>
 
-          <button type="button" onclick="setGateCreds('alex@lifepilot.ai', 'password123')" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left">
-            <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-full bg-slate-700 text-white font-bold text-[11px] flex items-center justify-center">AM</span>
-              <div>
+          <div onclick="setGateCreds('alex@lifepilot.ai', 'password123')" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left cursor-pointer group">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-7 h-7 rounded-full bg-slate-700 text-white font-bold text-[11px] flex items-center justify-center shrink-0">AM</span>
+              <div class="truncate">
                 <p class="text-xs font-bold text-slate-900 leading-tight">Alex Morgan (Product Designer)</p>
-                <p class="text-[10px] text-slate-500">alex@lifepilot.ai • password123</p>
+                <p class="text-[10px] text-slate-500 font-mono">alex@lifepilot.ai • password123</p>
               </div>
             </div>
-            <span class="text-[11px] text-[#0E7979] font-bold">Select →</span>
-          </button>
+            <div class="flex items-center gap-1.5 shrink-0 ml-2">
+              <button type="button" onclick="event.stopPropagation(); setGateCreds('alex@lifepilot.ai', 'password123', false)" class="text-[10px] font-semibold px-2 py-1 rounded-lg bg-white/80 hover:bg-white text-slate-700 border border-slate-200 shadow-xs" title="Put credentials into form">
+                Put Creds
+              </button>
+              <button type="button" onclick="event.stopPropagation(); setGateCreds('alex@lifepilot.ai', 'password123', true)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white shadow-xs">
+                Login →
+              </button>
+            </div>
+          </div>
 
-          <button type="button" onclick="setGateCreds('david@lifepilot.ai', 'password123')" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left">
-            <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-full bg-slate-700 text-white font-bold text-[11px] flex items-center justify-center">DC</span>
-              <div>
+          <div onclick="setGateCreds('david@lifepilot.ai', 'password123')" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left cursor-pointer group">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-7 h-7 rounded-full bg-slate-700 text-white font-bold text-[11px] flex items-center justify-center shrink-0">DC</span>
+              <div class="truncate">
                 <p class="text-xs font-bold text-slate-900 leading-tight">David Chen (Slide 4 Freelancer)</p>
-                <p class="text-[10px] text-slate-500">david@lifepilot.ai • password123</p>
+                <p class="text-[10px] text-slate-500 font-mono">david@lifepilot.ai • password123</p>
               </div>
             </div>
-            <span class="text-[11px] text-[#0E7979] font-bold">Select →</span>
-          </button>
+            <div class="flex items-center gap-1.5 shrink-0 ml-2">
+              <button type="button" onclick="event.stopPropagation(); setGateCreds('david@lifepilot.ai', 'password123', false)" class="text-[10px] font-semibold px-2 py-1 rounded-lg bg-white/80 hover:bg-white text-slate-700 border border-slate-200 shadow-xs" title="Put credentials into form">
+                Put Creds
+              </button>
+              <button type="button" onclick="event.stopPropagation(); setGateCreds('david@lifepilot.ai', 'password123', true)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white shadow-xs">
+                Login →
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -870,11 +891,31 @@
       lucide.createIcons();
     }
 
-    function setGateCreds(email, password) {
-      document.getElementById("gate-email").value = email;
-      document.getElementById("gate-password").value = password;
+    function setGateCreds(email, password, autoSubmit = false) {
+      const emailEl = document.getElementById("gate-email");
+      const passEl = document.getElementById("gate-password");
+      if (emailEl) {
+        emailEl.value = email;
+        emailEl.dispatchEvent(new Event("input", { bubbles: true }));
+        emailEl.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      if (passEl) {
+        passEl.value = password;
+        passEl.dispatchEvent(new Event("input", { bubbles: true }));
+        passEl.dispatchEvent(new Event("change", { bubbles: true }));
+      }
       const err = document.getElementById("gate-error");
       if (err) err.classList.add("hidden");
+
+      if (autoSubmit) {
+        const form = document.getElementById("gate-login-form");
+        if (form) {
+          form.requestSubmit();
+        }
+      } else {
+        const submitBtn = document.getElementById("gate-submit-btn");
+        if (submitBtn) submitBtn.focus();
+      }
     }
 
     async function handleGateLogin(e) {
@@ -1562,10 +1603,6 @@
         (m.status && m.status.toLowerCase().includes(q))
       ) : cachedMonitors;
       renderMonitorsList(filteredMonitors);
-    }
-      } catch (e) {
-        console.error("Monitors err:", e);
-      }
     }
 
     async function runMonitorNow(id) {
