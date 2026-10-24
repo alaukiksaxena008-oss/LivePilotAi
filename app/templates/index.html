@@ -210,7 +210,7 @@
         <!-- Search bar -->
         <div class="relative w-72">
           <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" placeholder="Search tasks, credentials, portals..." class="w-full bg-slate-100/80 border border-slate-200 rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20 focus:border-[#0E7979] transition" />
+          <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search tasks, credentials, portals..." class="w-full bg-slate-100/80 border border-slate-200 rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20 focus:border-[#0E7979] transition" />
         </div>
 
         <!-- Notification Bell -->
@@ -472,9 +472,7 @@
               <button onclick="openAddVaultModal()" class="text-xs font-semibold text-[#0E7979] hover:underline">+ Add Login</button>
             </div>
 
-            <div id="vault-items-list" class="space-y-3">
-              <p class="text-xs text-slate-400">Loading credentials...</p>
-            </div>
+            <div id="vault-items-list" class="space-y-3"></div>
           </div>
         </div>
       </section>
@@ -765,6 +763,53 @@
     </div>
   </div>
 
+  <!-- ==================== ADD VAULT CREDENTIAL MODAL ==================== -->
+  <div id="add-vault-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="card rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#e6f5f5] text-[#0E7979] flex items-center justify-center font-bold">
+            <i data-lucide="key" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Add Portal Login</h3>
+            <p class="text-[11px] text-slate-500">Save credentials for autonomous agent login</p>
+          </div>
+        </div>
+        <button onclick="closeAddVaultModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <form onsubmit="handleAddVault(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Service / Portal Name *</label>
+          <input type="text" id="nv-service" placeholder="e.g. IndiGo Airlines, SBI NetBanking, Passport Portal" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Portal URL (optional)</label>
+          <input type="url" id="nv-url" placeholder="https://..." class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Username / Email / ID *</label>
+            <input type="text" id="nv-username" placeholder="user@domain.com" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Password *</label>
+            <input type="password" id="nv-password" placeholder="••••••••" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Notes / Security hints (optional)</label>
+          <input type="text" id="nv-notes" placeholder="e.g. Account ref #, primary login" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddVaultModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#0E7979] text-white font-semibold hover:bg-[#0b5e5e] shadow-sm">Save Credential</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ==================== JAVASCRIPT ==================== -->
   <script>
     // Current Active User (null by default; asks for login on page open)
@@ -927,6 +972,35 @@
     function closeNewTaskModal() {
       document.getElementById("new-task-modal").classList.add("hidden");
     }
+    function openAddVaultModal() {
+      document.getElementById("add-vault-modal").classList.remove("hidden");
+      document.getElementById("nv-service").focus();
+    }
+    function closeAddVaultModal() {
+      document.getElementById("add-vault-modal").classList.add("hidden");
+      document.getElementById("nv-service").value = "";
+      document.getElementById("nv-url").value = "";
+      document.getElementById("nv-username").value = "";
+      document.getElementById("nv-password").value = "";
+      document.getElementById("nv-notes").value = "";
+    }
+    async function handleAddVault(e) {
+      e.preventDefault();
+      const service_name = document.getElementById("nv-service").value.trim();
+      const portal_url = document.getElementById("nv-url").value.trim();
+      const username = document.getElementById("nv-username").value.trim();
+      const password = document.getElementById("nv-password").value;
+      const notes = document.getElementById("nv-notes").value.trim();
+      const userId = (currentUser && currentUser.id) ? currentUser.id : "riya";
+
+      await fetch('/vault', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, service_name, portal_url, username, password, notes })
+      });
+      closeAddVaultModal();
+      loadVaultItems();
+    }
 
     // Quick Login Switcher
     async function quickLogin(userId) {
@@ -994,73 +1068,87 @@
       loadChatHistory();
     }
 
+    // Global Caches for Instant Live Search
+    let cachedTasks = [];
+    let cachedVault = [];
+    let cachedMonitors = [];
+
     // Load Tasks & Priority Changer
     async function loadUserTasks() {
+      if (!currentUser) return;
       try {
         const res = await fetch(`/tasks?user_id=${currentUser.id}`);
-        const tasks = await res.json();
+        cachedTasks = await res.json();
 
-        document.getElementById("stat-tasks-count").textContent = String(tasks.length).padStart(2, '0');
-        document.getElementById("stat-urgent-count").textContent = String(tasks.filter(t => t.priority === 'URGENT').length).padStart(2, '0');
+        document.getElementById("stat-tasks-count").textContent = String(cachedTasks.length).padStart(2, '0');
+        document.getElementById("stat-urgent-count").textContent = String(cachedTasks.filter(t => t.priority === 'URGENT').length).padStart(2, '0');
 
-        const container = document.getElementById("dynamic-tasks-list");
-        if (tasks.length === 0) {
-          container.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">No tasks recorded in database. Click + Add to create one!</p>`;
-          return;
+        const searchVal = (document.getElementById("global-search-input") || {}).value || "";
+        if (searchVal.trim()) {
+          handleGlobalSearch(searchVal);
+        } else {
+          renderTasksList(cachedTasks);
         }
-
-        container.innerHTML = tasks.map(t => {
-          const pColors = {
-            URGENT: 'bg-rose-100 text-rose-800 border-rose-300',
-            HIGH: 'bg-amber-100 text-amber-800 border-amber-300',
-            MEDIUM: 'bg-teal-50 text-[#0E7979] border-teal-200',
-            LOW: 'bg-slate-200 text-slate-700 border-slate-300'
-          };
-          const bColors = {
-            URGENT: 'border-l-rose-500',
-            HIGH: 'border-l-amber-500',
-            MEDIUM: 'border-l-[#0E7979]',
-            LOW: 'border-l-slate-300'
-          };
-
-          return `
-            <div class="p-3.5 rounded-xl border-l-4 ${bColors[t.priority] || 'border-l-slate-300'} bg-slate-100/70 hover:bg-slate-200/50 transition flex items-center justify-between gap-3 text-xs">
-              <div class="min-w-0 flex-1">
-                <p class="font-bold text-slate-900 truncate">${escapeHtml(t.title)}</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-[10px] text-slate-500">${t.due_date || 'No due date'}</span>
-                  ${t.target_url ? `<span class="text-[10px] font-mono text-[#0E7979] truncate max-w-xs">🔗 ${escapeHtml(t.target_url)}</span>` : ''}
-                </div>
-              </div>
-
-              <!-- Interactive Priority Pill -->
-              <div class="flex items-center gap-2 shrink-0">
-                <select onchange="updateTaskPriority(${t.id}, this.value)" class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-lg border cursor-pointer focus:outline-none ${pColors[t.priority] || 'bg-slate-100'}">
-                  <option value="URGENT" ${t.priority === 'URGENT' ? 'selected' : ''}>🔴 URGENT</option>
-                  <option value="HIGH" ${t.priority === 'HIGH' ? 'selected' : ''}>🟠 HIGH</option>
-                  <option value="MEDIUM" ${t.priority === 'MEDIUM' ? 'selected' : ''}>🟡 MEDIUM</option>
-                  <option value="LOW" ${t.priority === 'LOW' ? 'selected' : ''}>⚪ LOW</option>
-                </select>
-
-                <div class="w-7 h-7 flex items-center justify-center">
-                  ${t.target_url ? `
-                    <button onclick="runTaskWithAgent('${escapeHtml(t.title)}', '${escapeHtml(t.target_url)}')" class="w-7 h-7 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white flex items-center justify-center" title="Execute with LifePilot AI">
-                      <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                    </button>
-                  ` : ''}
-                </div>
-
-                <button onclick="deleteTaskItem(${t.id})" class="w-7 h-7 text-slate-400 hover:text-rose-600 rounded flex items-center justify-center" title="Delete task">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('');
-        lucide.createIcons();
       } catch (err) {
         console.error("Failed to load tasks:", err);
       }
+    }
+
+    function renderTasksList(tasks) {
+      const container = document.getElementById("dynamic-tasks-list");
+      if (!container) return;
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">No tasks found. Click + Add Task to create one!</p>`;
+        return;
+      }
+
+      const pColors = {
+        URGENT: 'bg-rose-100 text-rose-800 border-rose-300',
+        HIGH: 'bg-amber-100 text-amber-800 border-amber-300',
+        MEDIUM: 'bg-teal-50 text-[#0E7979] border-teal-200',
+        LOW: 'bg-slate-200 text-slate-700 border-slate-300'
+      };
+      const bColors = {
+        URGENT: 'border-l-rose-500',
+        HIGH: 'border-l-amber-500',
+        MEDIUM: 'border-l-[#0E7979]',
+        LOW: 'border-l-slate-300'
+      };
+
+      container.innerHTML = tasks.map(t => `
+        <div class="p-3.5 rounded-xl border-l-4 ${bColors[t.priority] || 'border-l-slate-300'} bg-slate-100/70 hover:bg-slate-200/50 transition flex items-center justify-between gap-3 text-xs">
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-slate-900 truncate">${escapeHtml(t.title)}</p>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[10px] text-slate-500">${t.due_date || 'No due date'}</span>
+              ${t.target_url ? `<span class="text-[10px] font-mono text-[#0E7979] truncate max-w-xs">🔗 ${escapeHtml(t.target_url)}</span>` : ''}
+            </div>
+          </div>
+
+          <!-- Interactive Priority Pill -->
+          <div class="flex items-center gap-2 shrink-0">
+            <select onchange="updateTaskPriority(${t.id}, this.value)" class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-lg border cursor-pointer focus:outline-none ${pColors[t.priority] || 'bg-slate-100'}">
+              <option value="URGENT" ${t.priority === 'URGENT' ? 'selected' : ''}>🔴 URGENT</option>
+              <option value="HIGH" ${t.priority === 'HIGH' ? 'selected' : ''}>🟠 HIGH</option>
+              <option value="MEDIUM" ${t.priority === 'MEDIUM' ? 'selected' : ''}>🟡 MEDIUM</option>
+              <option value="LOW" ${t.priority === 'LOW' ? 'selected' : ''}>⚪ LOW</option>
+            </select>
+
+            <div class="w-7 h-7 flex items-center justify-center">
+              ${t.target_url ? `
+                <button onclick="runTaskWithAgent('${escapeHtml(t.title)}', '${escapeHtml(t.target_url)}')" class="w-7 h-7 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white flex items-center justify-center" title="Execute with LifePilot AI">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                </button>
+              ` : ''}
+            </div>
+
+            <button onclick="deleteTaskItem(${t.id})" class="w-7 h-7 text-slate-400 hover:text-rose-600 rounded flex items-center justify-center" title="Delete task">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
     }
 
     async function updateTaskPriority(taskId, newPriority) {
@@ -1158,28 +1246,43 @@
     }
 
     async function loadVaultItems() {
+      if (!currentUser) return;
       try {
         const res = await fetch(`/vault?user_id=${currentUser.id}`);
-        const items = await res.json();
-        document.getElementById("stat-vault-count").textContent = String(items.length).padStart(2, '0');
-        const list = document.getElementById("vault-items-list");
-        if (items.length === 0) {
-          list.innerHTML = `<p class="text-xs text-slate-400 py-3">No saved portal logins for this user.</p>`;
-          return;
+        cachedVault = await res.json();
+        document.getElementById("stat-vault-count").textContent = String(cachedVault.length).padStart(2, '0');
+
+        const searchVal = (document.getElementById("global-search-input") || {}).value || "";
+        if (searchVal.trim()) {
+          handleGlobalSearch(searchVal);
+        } else {
+          renderVaultList(cachedVault);
         }
-        list.innerHTML = items.map(v => `
-          <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
-            <div>
-              <p class="font-bold text-slate-900">${escapeHtml(v.service_name)}</p>
-              <p class="text-[11px] text-slate-500 font-mono mt-0.5">${escapeHtml(v.username)} • ${v.password_masked}</p>
-            </div>
-            <button onclick="deleteVaultItem(${v.id})" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </div>
-        `).join('');
-        lucide.createIcons();
       } catch (e) {
         console.error("Vault err:", e);
       }
+    }
+
+    function renderVaultList(items) {
+      const list = document.getElementById("vault-items-list");
+      if (!list) return;
+      if (!items || items.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">No saved credentials found. Click + Add Login above.</p>`;
+        return;
+      }
+      list.innerHTML = items.map(v => `
+        <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-xs hover:border-[#0E7979]/40 transition">
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-slate-900 truncate">${escapeHtml(v.service_name)}</p>
+            <p class="text-[11px] text-slate-500 font-mono mt-0.5 truncate">${escapeHtml(v.username)} • ${v.password_masked || '••••••••'}</p>
+            ${v.portal_url ? `<p class="text-[10px] text-[#0E7979] font-mono truncate mt-0.5">${escapeHtml(v.portal_url)}</p>` : ''}
+          </div>
+          <button onclick="deleteVaultItem(${v.id})" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-500 shrink-0 ml-2" title="Delete credential">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+      lucide.createIcons();
     }
 
     async function deleteVaultItem(id) {
@@ -1372,15 +1475,29 @@
 
     // Refresh Monitors
     async function refreshMonitors() {
+      if (!currentUser) return;
       try {
         const res = await fetch(`/monitors?user_id=${currentUser.id}`);
-        const monitors = await res.json();
-        document.getElementById("active-monitors-badge").textContent = monitors.filter(m => m.status === 'active').length;
-        document.getElementById("stat-monitors-count").textContent = String(monitors.length).padStart(2, '0');
+        cachedMonitors = await res.json();
+        document.getElementById("active-monitors-badge").textContent = cachedMonitors.filter(m => m.status === 'active').length;
+        document.getElementById("stat-monitors-count").textContent = String(cachedMonitors.length).padStart(2, '0');
 
-        const quickList = document.getElementById("quick-monitors-list");
-        if (monitors.length === 0) {
-          quickList.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">No active watchers for this user.</p>`;
+        const searchVal = (document.getElementById("global-search-input") || {}).value || "";
+        if (searchVal.trim()) {
+          handleGlobalSearch(searchVal);
+        } else {
+          renderMonitorsList(cachedMonitors);
+        }
+      } catch (e) {
+        console.error("Monitors err:", e);
+      }
+    }
+
+    function renderMonitorsList(monitors) {
+      const quickList = document.getElementById("quick-monitors-list");
+      if (quickList) {
+        if (!monitors || monitors.length === 0) {
+          quickList.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">No active watchers.</p>`;
         } else {
           quickList.innerHTML = monitors.slice(0, 3).map(m => `
             <div class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-between text-xs">
@@ -1392,29 +1509,62 @@
             </div>
           `).join('');
         }
+      }
 
-        const tbody = document.getElementById("full-monitors-tbody");
-        if (tbody) {
-          if (monitors.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No monitors created yet.</td></tr>`;
-          } else {
-            tbody.innerHTML = monitors.map(m => `
-              <tr class="hover:bg-slate-200/50 transition">
-                <td class="py-3 px-4 font-mono font-bold text-slate-400">#${m.id}</td>
-                <td class="py-3 px-4"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${m.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-teal-50 text-[#0E7979]'}">${m.status}</span></td>
-                <td class="py-3 px-4 max-w-xs truncate font-medium text-slate-900" title="${escapeHtml(m.url)}">${escapeHtml(m.url)}</td>
-                <td class="py-3 px-4 max-w-xs truncate text-slate-600">${escapeHtml(m.goal)}</td>
-                <td class="py-3 px-4 text-slate-500">${m.interval_seconds / 60}m</td>
-                <td class="py-3 px-4 font-mono text-[11px] text-slate-600">${m.last_result ? JSON.stringify(m.last_result) : '-'}</td>
-                <td class="py-3 px-4 text-right space-x-1 shrink-0">
-                  <button onclick="runMonitorNow(${m.id})" class="p-1 text-[#0E7979]" title="Run Check Now"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>
-                  <button onclick="deleteMonitor(${m.id})" class="p-1 text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                </td>
-              </tr>
-            `).join('');
-          }
+      const tbody = document.getElementById("full-monitors-tbody");
+      if (tbody) {
+        if (!monitors || monitors.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No monitors found.</td></tr>`;
+        } else {
+          tbody.innerHTML = monitors.map(m => `
+            <tr class="hover:bg-slate-200/50 transition">
+              <td class="py-3 px-4 font-mono font-bold text-slate-400">#${m.id}</td>
+              <td class="py-3 px-4"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${m.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-teal-50 text-[#0E7979]'}">${m.status}</span></td>
+              <td class="py-3 px-4 max-w-xs truncate font-medium text-slate-900" title="${escapeHtml(m.url)}">${escapeHtml(m.url)}</td>
+              <td class="py-3 px-4 max-w-xs truncate text-slate-600">${escapeHtml(m.goal)}</td>
+              <td class="py-3 px-4 text-slate-500">${m.interval_seconds / 60}m</td>
+              <td class="py-3 px-4 font-mono text-[11px] text-slate-600">${m.last_result ? JSON.stringify(m.last_result) : '-'}</td>
+              <td class="py-3 px-4 text-right space-x-1 shrink-0">
+                <button onclick="runMonitorNow(${m.id})" class="p-1 text-[#0E7979]" title="Run Check Now"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>
+                <button onclick="deleteMonitor(${m.id})" class="p-1 text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              </td>
+            </tr>
+          `).join('');
         }
-        lucide.createIcons();
+      }
+      lucide.createIcons();
+    }
+
+    // Global Live Search Across Tasks, Vault Logins, and Monitors
+    function handleGlobalSearch(query) {
+      const q = (query || "").trim().toLowerCase();
+
+      // 1. Filter Tasks
+      const filteredTasks = q ? cachedTasks.filter(t => 
+        (t.title && t.title.toLowerCase().includes(q)) ||
+        (t.target_url && t.target_url.toLowerCase().includes(q)) ||
+        (t.priority && t.priority.toLowerCase().includes(q)) ||
+        (t.due_date && t.due_date.toLowerCase().includes(q))
+      ) : cachedTasks;
+      renderTasksList(filteredTasks);
+
+      // 2. Filter Vault Credentials
+      const filteredVault = q ? cachedVault.filter(v => 
+        (v.service_name && v.service_name.toLowerCase().includes(q)) ||
+        (v.portal_url && v.portal_url.toLowerCase().includes(q)) ||
+        (v.username && v.username.toLowerCase().includes(q)) ||
+        (v.notes && v.notes.toLowerCase().includes(q))
+      ) : cachedVault;
+      renderVaultList(filteredVault);
+
+      // 3. Filter Monitors
+      const filteredMonitors = q ? cachedMonitors.filter(m => 
+        (m.url && m.url.toLowerCase().includes(q)) ||
+        (m.goal && m.goal.toLowerCase().includes(q)) ||
+        (m.status && m.status.toLowerCase().includes(q))
+      ) : cachedMonitors;
+      renderMonitorsList(filteredMonitors);
+    }
       } catch (e) {
         console.error("Monitors err:", e);
       }
