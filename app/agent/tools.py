@@ -15,8 +15,9 @@ READ_ONLY_PREFIX = (
 
 FORM_FILL_PREFIX = (
     "FORM-FILLING TASK. Navigate the form carefully. Fill in the user's provided details "
-    "into the matching input fields (name, email, phone, ID, etc.). Navigate to the review or confirmation screen. "
-    "Do NOT pay any money. Task: "
+    "into the matching input fields (e.g. name, email, phone, address, college, degree, ID). "
+    "Once all required fields are filled, submit the form (or proceed to the final confirmation screen). "
+    "Do NOT make any financial payments. Task: "
 )
 
 
