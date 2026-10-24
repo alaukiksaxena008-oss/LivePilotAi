@@ -67,3 +67,77 @@ def passport_page(otp: str | None = None):
 </form>
 </body></html>"""
 
+
+@app.get("/scholarship", response_class=HTMLResponse)
+@app.post("/scholarship", response_class=HTMLResponse)
+def scholarship_portal(
+    full_name: str | None = None,
+    email: str | None = None,
+    phone: str | None = None,
+    dob: str | None = None,
+    id_number: str | None = None,
+    college: str | None = None,
+    degree: str | None = None,
+    cgpa: str | None = None,
+):
+    if full_name and email and college:
+        return f"""<html><head><title>Scholarship Confirmation</title></head><body style="font-family:sans-serif;max-width:540px;margin:40px auto;background:#f8fafc;padding:24px;border-radius:12px;border:1px solid #e2e8f0">
+<div style="text-align:center;color:#0e7979"><h2>🎉 Application Submitted Successfully!</h2></div>
+<p style="font-size:14px;color:#334155">Your application for the <b>National Higher Education Scholarship 2026</b> has been received and logged.</p>
+<hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0"/>
+<p>Application ID: <b style="color:#0e7979">#SCH-2026-8941</b></p>
+<p>Applicant Name: <b>{full_name}</b></p>
+<p>Email: <b>{email}</b> | Phone: <b>{phone or 'Verified'}</b></p>
+<p>Date of Birth: <b>{dob or 'Verified'}</b> | ID Number: <b>{id_number or 'Verified'}</b></p>
+<p>College / Institute: <b>{college}</b></p>
+<p>Degree: <b>{degree or 'B.Tech'}</b> | CGPA: <b>{cgpa or '8.9'}</b></p>
+<p>Application Status: <b style="color:#0284c7;background:#e0f2fe;padding:2px 8px;border-radius:4px">UNDER REVIEW</b></p>
+<p style="font-size:12px;color:#64748b;margin-top:20px">Verification timestamp: {time.strftime('%d %b %Y, %H:%M')}. An alert has been dispatched to your registered LifePilot account.</p>
+</body></html>"""
+    else:
+        return """<html><head><title>National Scholarship Application Portal</title></head><body style="font-family:sans-serif;max-width:540px;margin:40px auto;background:#f8fafc;padding:24px;border-radius:12px;border:1px solid #e2e8f0">
+<h2 style="color:#0e7979;margin-top:0">National Higher Education Scholarship 2026</h2>
+<p style="font-size:13px;color:#64748b">Please enter your candidate details below to submit your application.</p>
+<form method="get" action="/scholarship" style="display:flex;flex-direction:column;gap:12px">
+  <div>
+    <label style="font-size:12px;font-weight:bold;color:#334155">Full Legal Name *</label><br/>
+    <input type="text" name="full_name" id="full_name" placeholder="e.g. Riya Sharma" required style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+  </div>
+  <div>
+    <label style="font-size:12px;font-weight:bold;color:#334155">Email Address *</label><br/>
+    <input type="email" name="email" id="email" placeholder="e.g. riya@lifepilot.ai" required style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div>
+      <label style="font-size:12px;font-weight:bold;color:#334155">Phone Number</label><br/>
+      <input type="text" name="phone" id="phone" placeholder="+91 98765 43210" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+    </div>
+    <div>
+      <label style="font-size:12px;font-weight:bold;color:#334155">Date of Birth (YYYY-MM-DD)</label><br/>
+      <input type="text" name="dob" id="dob" placeholder="1999-04-12" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+    </div>
+  </div>
+  <div>
+    <label style="font-size:12px;font-weight:bold;color:#334155">Government ID / Passport / Aadhaar Number</label><br/>
+    <input type="text" name="id_number" id="id_number" placeholder="IND-849204" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+  </div>
+  <div>
+    <label style="font-size:12px;font-weight:bold;color:#334155">College / University Name *</label><br/>
+    <input type="text" name="college" id="college" placeholder="Delhi Technological University" required style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div>
+      <label style="font-size:12px;font-weight:bold;color:#334155">Degree Program</label><br/>
+      <input type="text" name="degree" id="degree" placeholder="B.Tech Computer Science" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+    </div>
+    <div>
+      <label style="font-size:12px;font-weight:bold;color:#334155">Cumulative GPA / Percentage</label><br/>
+      <input type="text" name="cgpa" id="cgpa" placeholder="8.9" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;box-sizing:border-box" />
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <button type="submit" id="submit-application-btn" style="background:#0e7979;color:white;padding:10px 20px;border:none;border-radius:6px;font-weight:bold;cursor:pointer">Submit Scholarship Application</button>
+  </div>
+</form>
+</body></html>"""
+

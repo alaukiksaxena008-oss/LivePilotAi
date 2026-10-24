@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifePilot AI - Your Personal Command Center</title>
+  <title>LifePilot AI - Autonomous Life Admin Operations Center</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -18,93 +18,97 @@
         extend: {
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
             brand: {
-              50: '#f5f3ff',
-              100: '#ede9fe',
-              200: '#ddd6fe',
-              500: '#8b5cf6',
-              600: '#7c3aed',
-              700: '#6d28d9',
+              DEFAULT: '#0E7979',
+              50: '#e6f5f5',
+              100: '#ccebeb',
+              200: '#99d7d7',
+              500: '#149696',
+              600: '#0E7979',
+              700: '#0b5e5e',
+              800: '#073f3f',
             },
-            bgGray: '#f4f5f8',
+            appBg: '#eef2f6',
+            cardBg: '#f8fafc',
           }
         }
       }
     }
   </script>
   <style>
-    body { background-color: #f4f5f8; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    body { background-color: #eef2f6; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .card { background-color: #f8fafc; border: 1px solid #e2e8f0; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen flex">
+<body class="text-slate-800 antialiased min-h-screen flex bg-appBg">
 
   <!-- ==================== SIDEBAR ==================== -->
-  <aside class="w-64 bg-white border-r border-slate-100 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
+  <aside class="w-64 card border-r border-slate-200/80 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
     <div>
-      <!-- Logo -->
+      <!-- Brand Logo -->
       <div class="flex items-center gap-2.5 px-2 py-3 mb-6">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0E7979] to-teal-500 flex items-center justify-center text-white shadow-md shadow-teal-900/20">
           <i data-lucide="sparkles" class="w-5 h-5"></i>
         </div>
         <div>
           <span class="text-lg font-bold tracking-tight text-slate-900">LifePilot</span>
-          <span class="ml-1 text-[11px] font-semibold bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-md">AI</span>
+          <span class="ml-1 text-[11px] font-bold bg-[#e6f5f5] text-[#0E7979] px-1.5 py-0.5 rounded-md">OPS</span>
         </div>
       </div>
 
       <!-- Navigation Section -->
-      <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Workspace</div>
+      <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Agent Center</div>
       <nav class="space-y-1">
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-brand-50 text-brand-700">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-[#e6f5f5] text-[#0E7979]">
           <i data-lucide="layout-grid" class="w-4 h-4"></i>
-          <span>Dashboard</span>
+          <span>Command Center</span>
         </button>
-        <button onclick="switchTab('calendar')" id="nav-calendar" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
-          <span>Calendar</span>
+        <button onclick="switchTab('formfill')" id="nav-formfill" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
+          <i data-lucide="file-check-2" class="w-4 h-4 text-slate-400"></i>
+          <span>Auto-Form Filler</span>
         </button>
-        <button onclick="switchTab('dues')" id="nav-dues" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="wallet" class="w-4 h-4 text-slate-400"></i>
-          <span>Dues & Payments</span>
-        </button>
-        <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
-          <i data-lucide="check-square" class="w-4 h-4 text-slate-400"></i>
-          <span>Tasks & Applications</span>
-        </button>
-        <button onclick="switchTab('monitoring')" id="nav-monitoring" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+        <button onclick="switchTab('monitoring')" id="nav-monitoring" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
           <div class="flex items-center gap-3">
             <i data-lucide="activity" class="w-4 h-4 text-slate-400"></i>
-            <span>Activity & Monitoring</span>
+            <span>Background Monitors</span>
           </div>
-          <span id="active-monitors-badge" class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">0</span>
+          <span id="active-monitors-badge" class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full">0</span>
+        </button>
+        <button onclick="switchTab('vault')" id="nav-vault" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
+          <i data-lucide="shield-check" class="w-4 h-4 text-slate-400"></i>
+          <span>Profile & Vault</span>
+        </button>
+        <button onclick="switchTab('database')" id="nav-database" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
+          <i data-lucide="database" class="w-4 h-4 text-slate-400"></i>
+          <span>DB & Tool Audit</span>
         </button>
       </nav>
     </div>
 
-    <!-- User Profile & Settings -->
-    <div class="border-t border-slate-100 pt-4">
-      <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Personal</div>
-      <button class="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition mb-3">
-        <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
-        <span>Settings</span>
-      </button>
+    <!-- Active User & Account Switcher -->
+    <div class="border-t border-slate-200 pt-4">
+      <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
+        <span>Account</span>
+        <button onclick="openLoginModal()" class="text-[#0E7979] hover:underline normal-case">Switch</button>
+      </div>
 
-      <div class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition">
+      <div onclick="openLoginModal()" class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-200/70 cursor-pointer transition border border-transparent hover:border-slate-300">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-700 font-bold text-xs flex items-center justify-center">
-            AM
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-[#0E7979] text-white font-bold text-xs flex items-center justify-center shadow-xs">
+            RS
           </div>
           <div class="text-left">
-            <p class="text-xs font-bold text-slate-800 leading-none">Alex Morgan</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Personal Workspace</p>
+            <p id="user-name" class="text-xs font-bold text-slate-900 leading-none">Riya Sharma</p>
+            <p id="user-role" class="text-[11px] text-slate-500 mt-0.5 truncate max-w-[120px]">Software Engineer</p>
           </div>
         </div>
-        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+        <i data-lucide="chevrons-up-down" class="w-4 h-4 text-slate-400"></i>
       </div>
     </div>
   </aside>
@@ -112,421 +116,430 @@
   <!-- ==================== MAIN CONTENT ==================== -->
   <main class="flex-1 flex flex-col min-w-0">
     <!-- Topbar -->
-    <header class="bg-white/80 backdrop-blur border-b border-slate-100 px-8 py-3.5 flex items-center justify-between sticky top-0 z-10">
-      <h1 id="page-title" class="text-lg font-bold text-slate-800">Dashboard</h1>
+    <header class="card border-b border-slate-200 px-8 py-3.5 flex items-center justify-between sticky top-0 z-10 shadow-xs">
+      <div class="flex items-center gap-3">
+        <h1 id="page-title" class="text-base font-bold text-slate-900">Personal Command Center</h1>
+        <span class="text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Daemon Active
+        </span>
+      </div>
       
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3.5">
         <!-- Search bar -->
-        <div class="relative w-80">
-          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" placeholder="Search tasks, bills, events..." class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+        <div class="relative w-72">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input type="text" placeholder="Search tasks, credentials, portals..." class="w-full bg-slate-100/80 border border-slate-200 rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20 focus:border-[#0E7979] transition" />
         </div>
 
         <!-- Notification Bell -->
-        <div class="relative">
-          <button onclick="openAlertsModal()" class="w-9 h-9 rounded-xl border border-slate-200/60 flex items-center justify-center text-slate-600 hover:bg-slate-50 relative transition">
-            <i data-lucide="bell" class="w-4 h-4"></i>
-            <span id="alerts-count-badge" class="w-2 h-2 rounded-full bg-rose-500 absolute top-2 right-2 hidden"></span>
-          </button>
-        </div>
+        <button onclick="openAlertsModal()" class="w-8 h-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 relative transition">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span id="alerts-count-badge" class="w-2 h-2 rounded-full bg-rose-500 absolute top-1.5 right-1.5 hidden"></span>
+        </button>
 
-        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center">
-          AM
-        </div>
+        <!-- Current User Avatar Pill -->
+        <button onclick="openLoginModal()" class="flex items-center gap-2 pl-2 pr-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-xs font-semibold text-slate-700 transition">
+          <span id="top-user-avatar" class="w-5 h-5 rounded-full bg-[#0E7979] text-white text-[10px] flex items-center justify-center font-bold">RS</span>
+          <span id="top-user-name">Riya</span>
+        </button>
       </div>
     </header>
 
     <!-- Page Body -->
     <div class="p-8 max-w-7xl mx-auto w-full space-y-6">
 
-      <!-- ==================== VIEW: DASHBOARD ==================== -->
+      <!-- ==================== VIEW: COMMAND CENTER ==================== -->
       <section id="view-dashboard" class="space-y-6">
-        <!-- Welcome Hero -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Welcome Hero Banner -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 card p-6 rounded-2xl border border-slate-200/90 shadow-xs">
           <div>
-            <p class="text-[11px] font-bold text-brand-600 uppercase tracking-widest mb-1">Your Personal Command Center</p>
-            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Good morning, Alex 👋</h2>
-            <p class="text-xs text-slate-500 mt-1">Here's what deserves your attention today. <span class="font-medium text-slate-700" id="current-date-text"></span></p>
+            <p class="text-[11px] font-bold text-[#0E7979] uppercase tracking-widest mb-1 flex items-center gap-1.5">
+              <i data-lucide="bot" class="w-3.5 h-3.5"></i> LifePilot Autonomous Agent
+            </p>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight" id="hero-greeting">Good morning, Riya 👋</h2>
+            <p class="text-xs text-slate-500 mt-1">Here is what deserves your attention. All background monitors are synced with SQLite.</p>
           </div>
           <div class="flex items-center gap-2.5">
-            <button onclick="openGoalModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm shadow-brand-600/30 transition">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-              <span>+ Ask LifePilot</span>
+            <button onclick="openGoalModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0E7979] hover:bg-[#0b5e5e] text-white text-xs font-semibold shadow-sm transition">
+              <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+              <span>+ Run Agent Task</span>
             </button>
-            <button onclick="openNewMonitorModal()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
+            <button onclick="openNewTaskModal()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl card border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              <span>+ Quick Add</span>
+              <span>+ Add Task</span>
             </button>
           </div>
         </div>
 
-        <!-- 4 Metric Cards -->
+        <!-- 4 Stat Counters -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Card 1 -->
-          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 shrink-0">
-              <i data-lucide="list-todo" class="w-5 h-5"></i>
+          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-[#e6f5f5] flex items-center justify-center text-[#0E7979] shrink-0 font-bold">
+              <i data-lucide="list-checks" class="w-5 h-5"></i>
             </div>
             <div>
-              <p class="text-2xl font-extrabold text-slate-900 leading-none">04</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Tasks Today</p>
-              <p class="text-[11px] text-slate-400">2 completed, 2 remaining</p>
+              <p id="stat-tasks-count" class="text-2xl font-extrabold text-slate-900 leading-none">04</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Pending Priorities</p>
+              <p class="text-[11px] text-slate-400">Tracked in SQLite</p>
             </div>
           </div>
-          <!-- Card 2 -->
-          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center text-brand-600 shrink-0">
-              <i data-lucide="calendar-clock" class="w-5 h-5"></i>
+          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0 font-bold">
+              <i data-lucide="clock" class="w-5 h-5"></i>
             </div>
             <div>
-              <p class="text-2xl font-extrabold text-slate-900 leading-none">03</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Upcoming Deadlines</p>
-              <p class="text-[11px] text-slate-400">Next 7 days</p>
+              <p id="stat-urgent-count" class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Urgent Deadlines</p>
+              <p class="text-[11px] text-rose-500 font-medium">Require action today</p>
             </div>
           </div>
-          <!-- Card 3 -->
-          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
-              <i data-lucide="wallet" class="w-5 h-5"></i>
+          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center text-[#0E7979] shrink-0 font-bold">
+              <i data-lucide="eye" class="w-5 h-5"></i>
             </div>
             <div>
-              <p class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Pending Payments</p>
-              <p class="text-[11px] text-rose-500 font-medium">One due today</p>
+              <p id="stat-monitors-count" class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Active Monitors</p>
+              <p class="text-[11px] text-emerald-600 font-medium">Checking automatically</p>
             </div>
           </div>
-          <!-- Card 4 -->
-          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
-              <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          <div class="card p-4.5 rounded-2xl shadow-xs flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 font-bold">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
             </div>
             <div>
-              <p id="stat-completed-count" class="text-2xl font-extrabold text-slate-900 leading-none">12</p>
-              <p class="text-xs font-semibold text-slate-700 mt-1">Completed This Week</p>
-              <p class="text-[11px] text-slate-400">Tasks finished</p>
+              <p id="stat-vault-count" class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Vault Credentials</p>
+              <p class="text-[11px] text-slate-400">Encrypted in DB</p>
             </div>
           </div>
         </div>
 
-        <!-- Priorities & Week Schedule (2 Columns) -->
+        <!-- 2 Column Section: Dynamic Tasks with Priority Toggles + Live Automations -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Today's Priorities (5 cols) -->
-          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+          
+          <!-- Column 1: Real Dynamic Tasks (7 Cols) -->
+          <div class="lg:col-span-7 card p-6 rounded-2xl shadow-xs flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-4">
                 <div>
-                  <h3 class="text-sm font-bold text-slate-900">Today's Priorities</h3>
-                  <p class="text-[11px] text-slate-400">Focus on what matters most</p>
+                  <h3 class="text-sm font-bold text-slate-900">Life Admin Tasks & Priorities</h3>
+                  <p class="text-[11px] text-slate-500">Real tasks stored in SQLite. Click any priority pill to change it live!</p>
                 </div>
-                <button onclick="switchTab('tasks')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">View All</button>
-              </div>
-
-              <!-- Priorities List -->
-              <div class="space-y-3">
-                <!-- Item 1 -->
-                <div class="p-3.5 rounded-xl border-l-4 border-l-rose-500 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-3">
-                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
-                    <div>
-                      <p class="text-xs font-bold text-slate-800">Pay Electricity Bill</p>
-                      <div class="flex items-center gap-2 mt-1">
-                        <span class="text-[10px] text-slate-500">Today, 6:00 PM</span>
-                        <span class="text-[9px] font-bold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded">URGENT</span>
-                        <span class="text-[10px] text-slate-400">Pending</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
-                </div>
-
-                <!-- Item 2 -->
-                <div class="p-3.5 rounded-xl border-l-4 border-l-amber-500 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-3">
-                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
-                    <div>
-                      <p class="text-xs font-bold text-slate-800">Track IndiGo Flight Refund (₹8,420)</p>
-                      <div class="flex items-center gap-2 mt-1">
-                        <span class="text-[10px] text-slate-500">Active Monitor</span>
-                        <span class="text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">AUTO-WATCH</span>
-                        <span class="text-[10px] text-emerald-600 font-medium">Checking</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
-                </div>
-
-                <!-- Item 3 -->
-                <div class="p-3.5 rounded-xl border-l-4 border-l-emerald-500 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-3">
-                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
-                    <div>
-                      <p class="text-xs font-bold text-slate-800">Passport Application Status</p>
-                      <div class="flex items-center gap-2 mt-1">
-                        <span class="text-[10px] text-slate-500">Application IND-849204</span>
-                        <span class="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">VERIFIED</span>
-                        <span class="text-[10px] text-slate-400">Speed Post</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
-                </div>
-
-                <!-- Item 4 -->
-                <div class="p-3.5 rounded-xl border-l-4 border-l-slate-300 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-3">
-                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
-                    <div>
-                      <p class="text-xs font-bold text-slate-800">Submit Scholarship Application</p>
-                      <div class="flex items-center gap-2 mt-1">
-                        <span class="text-[10px] text-slate-500">Tomorrow, 11:59 PM</span>
-                        <span class="text-[9px] font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">HIGH</span>
-                        <span class="text-[10px] text-slate-400">In progress</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
-                </div>
-              </div>
-            </div>
-
-            <button onclick="openGoalModal()" class="mt-4 w-full py-2 border border-dashed border-slate-200 hover:border-brand-500 hover:text-brand-600 text-slate-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              <span>Assign new task to LifePilot</span>
-            </button>
-          </div>
-
-          <!-- This Week Calendar (7 cols) -->
-          <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div>
-                  <h3 class="text-sm font-bold text-slate-900">This Week</h3>
-                  <p class="text-[11px] text-slate-400" id="week-range-text">Oct 19 – Oct 25, 2026</p>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg font-medium">Current week</span>
-                  <button class="p-1 rounded-lg hover:bg-slate-100 text-slate-400"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                  <button class="p-1 rounded-lg hover:bg-slate-100 text-slate-400"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                  <button class="text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded-lg">Today</button>
-                </div>
-              </div>
-
-              <!-- 7 Day Week Grid -->
-              <div class="grid grid-cols-7 gap-2 text-center text-xs">
-                <!-- MON -->
-                <div class="p-2 rounded-xl bg-slate-50/70">
-                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Mon</span>
-                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">19</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Planning</div>
-                  </div>
-                </div>
-                <!-- TUE -->
-                <div class="p-2 rounded-xl bg-slate-50/70">
-                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Tue</span>
-                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">20</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Refund check</div>
-                  </div>
-                </div>
-                <!-- WED -->
-                <div class="p-2 rounded-xl bg-slate-50/70">
-                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Wed</span>
-                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">21</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-amber-50 text-amber-700 rounded text-[9px] truncate">Insurance</div>
-                  </div>
-                </div>
-                <!-- THU -->
-                <div class="p-2 rounded-xl bg-slate-50/70">
-                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Thu</span>
-                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">22</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Docs</div>
-                  </div>
-                </div>
-                <!-- FRI -->
-                <div class="p-2 rounded-xl bg-slate-50/70">
-                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Fri</span>
-                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">23</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-rose-50 text-rose-700 rounded text-[9px] truncate font-medium">Electricity</div>
-                  </div>
-                </div>
-                <!-- SAT (Today) -->
-                <div class="p-2 rounded-xl bg-brand-50 border border-brand-200 ring-2 ring-brand-500/10">
-                  <span class="text-[10px] font-extrabold text-brand-700 block uppercase">Sat</span>
-                  <span class="font-extrabold text-brand-700 text-xs mt-0.5 block">24</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-brand-600 text-white rounded text-[9px] truncate font-medium">Passport OTP</div>
-                    <div class="p-1 bg-emerald-100 text-emerald-800 rounded text-[9px] truncate">Refund Alert</div>
-                  </div>
-                </div>
-                <!-- SUN -->
-                <div class="p-2 rounded-xl bg-slate-50/70">
-                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Sun</span>
-                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">25</span>
-                  <div class="mt-2 space-y-1">
-                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Review</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-4">
-              <span class="text-[11px] text-slate-500 font-medium">Syncing live with LifePilot monitors</span>
-              <button onclick="switchTab('calendar')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">View Calendar →</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Payments & Dues + Active Monitors Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Payments & Dues (5 cols) -->
-          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <h3 class="text-sm font-bold text-slate-900">Payments & Dues</h3>
-                <p class="text-[11px] text-slate-400">A quick look at what's coming up</p>
-              </div>
-              <button onclick="switchTab('dues')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">View All</button>
-            </div>
-
-            <div class="space-y-3">
-              <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs">
-                    ⚡
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold text-slate-800">Electricity Bill</p>
-                    <span class="text-[9px] font-extrabold text-rose-600 bg-rose-50 px-1 py-0.5 rounded">DUE TODAY</span>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs font-extrabold text-slate-900">₹1,850</p>
-                  <p class="text-[10px] text-brand-600 font-medium hover:underline cursor-pointer">View Details</p>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
-                    🎬
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold text-slate-800">Streaming Subscription</p>
-                    <span class="text-[10px] text-slate-400">In 3 days</span>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs font-extrabold text-slate-900">₹499</p>
-                  <p class="text-[10px] text-slate-400">Auto-debit</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Live Background Monitors (7 cols) -->
-          <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <h3 class="text-sm font-bold text-slate-900">Live Background Monitors</h3>
-                </div>
-                <button onclick="refreshMonitors()" class="text-xs font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1">
-                  <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh
+                <button onclick="openNewTaskModal()" class="text-xs font-semibold text-[#0E7979] hover:underline flex items-center gap-1">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
                 </button>
               </div>
 
-              <!-- Dynamic Monitors Container -->
-              <div id="dashboard-monitors-list" class="space-y-2.5">
-                <div class="text-xs text-slate-400 text-center py-6">Loading active monitors from database...</div>
+              <!-- Task List (Dynamic) -->
+              <div id="dynamic-tasks-list" class="space-y-3">
+                <p class="text-xs text-slate-400 py-6 text-center">Loading tasks from database...</p>
               </div>
             </div>
 
-            <div class="pt-4 border-t border-slate-100 mt-4 flex items-center justify-between">
-              <span class="text-[11px] text-slate-400">Checked via TinyFish cloud browser engine</span>
-              <button onclick="switchTab('monitoring')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">Manage Monitors →</button>
+            <div class="pt-4 border-t border-slate-200/80 mt-4 flex items-center justify-between text-xs text-slate-500">
+              <span>Sort: Priority order (URGENT $\to$ HIGH $\to$ MEDIUM $\to$ LOW)</span>
+              <button onclick="loadUserTasks()" class="text-[#0E7979] hover:underline flex items-center gap-1 font-semibold">
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync Tasks
+              </button>
+            </div>
+          </div>
+
+          <!-- Column 2: One-Click Autonomous Actions & Fast Form Fill (5 Cols) -->
+          <div class="lg:col-span-5 space-y-6">
+            <!-- Form Autofill Card -->
+            <div class="card p-6 rounded-2xl shadow-xs border-l-4 border-l-[#0E7979]">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider bg-[#e6f5f5] text-[#0E7979] px-2 py-0.5 rounded">Autonomous Action</span>
+                <i data-lucide="file-text" class="w-4 h-4 text-[#0E7979]"></i>
+              </div>
+              <h3 class="text-sm font-bold text-slate-900">National Higher Education Scholarship</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                Applies user profile details (Name, DOB, ID, College, CGPA) automatically to the government portal.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">Portal: /scholarship</span>
+                <button onclick="runScholarshipAutofill()" class="px-3.5 py-1.5 rounded-xl bg-[#0E7979] hover:bg-[#0b5e5e] text-white text-xs font-semibold flex items-center gap-1.5 transition">
+                  <i data-lucide="play" class="w-3 h-3"></i>
+                  <span>Auto-Fill Form ▶️</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Background Monitor Widget -->
+            <div class="card p-6 rounded-2xl shadow-xs">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <h3 class="text-sm font-bold text-slate-900">Live Monitors (0 LLM Token Diff)</h3>
+                </div>
+                <button onclick="refreshMonitors()" class="text-[11px] text-slate-500 hover:text-slate-800">Refresh</button>
+              </div>
+              <div id="quick-monitors-list" class="space-y-2">
+                <p class="text-xs text-slate-400">Loading monitors...</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ==================== VIEW: ACTIVITY & MONITORING ==================== -->
-      <section id="view-monitoring" class="hidden space-y-6">
-        <div class="flex items-center justify-between">
+      <!-- ==================== VIEW: AUTO-FORM FILLER ==================== -->
+      <section id="view-formfill" class="hidden space-y-6">
+        <div class="card p-6 rounded-2xl shadow-xs flex items-center justify-between">
           <div>
-            <h2 class="text-xl font-bold text-slate-900">Activity & Monitoring</h2>
-            <p class="text-xs text-slate-500">Autonomous web monitors running in the background for your life admin</p>
+            <h2 class="text-lg font-bold text-slate-900">Autonomous Form-Filling Center</h2>
+            <p class="text-xs text-slate-500 mt-0.5">The agent extracts your saved profile details from SQLite and types them into web forms automatically.</p>
           </div>
-          <button onclick="openNewMonitorModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm transition">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add New Monitor
+          <button onclick="runScholarshipAutofill()" class="px-4 py-2 rounded-xl bg-[#0E7979] hover:bg-[#0b5e5e] text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i> Run Form-Filler on /scholarship
           </button>
         </div>
 
-        <!-- Full Monitors Table -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-700">All Scheduled Monitors</span>
-            <button onclick="refreshMonitors()" class="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1">
-              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync DB
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Form Description Card -->
+          <div class="card p-6 rounded-2xl shadow-xs space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="target" class="w-4 h-4 text-[#0E7979]"></i> Target: National Scholarship Portal
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Standard chatbots cannot fill forms because they are stateless. LifePilotAI connects your saved identity profile to TinyFish's cloud browser, fills every matching input field, and submits the form with zero manual typing.
+            </p>
+            <div class="bg-slate-100 p-3.5 rounded-xl space-y-2 text-xs font-mono text-slate-700">
+              <p><b>Fields Mapped:</b></p>
+              <p>• Full Legal Name $\to$ <span id="ff-preview-name" class="text-[#0E7979]">Riya Sharma</span></p>
+              <p>• Email Address $\to$ <span id="ff-preview-email" class="text-[#0E7979]">riya@lifepilot.ai</span></p>
+              <p>• Phone Number $\to$ <span id="ff-preview-phone" class="text-[#0E7979]">+91 98765 43210</span></p>
+              <p>• Government ID $\to$ <span id="ff-preview-id" class="text-[#0E7979]">IND-849204</span></p>
+              <p>• College / University $\to$ <span id="ff-preview-college" class="text-[#0E7979]">DTU</span></p>
+              <p>• Degree & CGPA $\to$ <span id="ff-preview-degree" class="text-[#0E7979]">B.Tech (8.9)</span></p>
+            </div>
+            <button onclick="runScholarshipAutofill()" class="w-full py-2.5 rounded-xl bg-[#0E7979] hover:bg-[#0b5e5e] text-white font-semibold text-xs transition">
+              Execute Autonomous Autofill Now
             </button>
+          </div>
+
+          <!-- Execution Stepper Container -->
+          <div class="card p-6 rounded-2xl shadow-xs space-y-4">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="cpu" class="w-4 h-4 text-[#0E7979]"></i> Live Agent Execution Steps
+            </h3>
+            <div id="formfill-stepper" class="space-y-3 text-xs">
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100/70 border border-slate-200">
+                <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold text-[11px]">1</span>
+                <div>
+                  <p class="font-bold text-slate-800">Fetch Identity Profile</p>
+                  <p class="text-[11px] text-slate-500">Load Name, ID, College from SQLite profiles table</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100/70 border border-slate-200">
+                <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold text-[11px]">2</span>
+                <div>
+                  <p class="font-bold text-slate-800">Navigate to Application Portal</p>
+                  <p class="text-[11px] text-slate-500">Launch cloud browser & inspect input schema</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100/70 border border-slate-200">
+                <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold text-[11px]">3</span>
+                <div>
+                  <p class="font-bold text-slate-800">Fill Input Fields</p>
+                  <p class="text-[11px] text-slate-500">Autonomous typing of candidate details</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100/70 border border-slate-200">
+                <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold text-[11px]">4</span>
+                <div>
+                  <p class="font-bold text-slate-800">Submit & Log Application</p>
+                  <p class="text-[11px] text-slate-500">Capture confirmation ID & record in database</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: PROFILE & CREDENTIAL VAULT ==================== -->
+      <section id="view-vault" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Personal Profile Details (7 Cols) -->
+          <div class="lg:col-span-7 card p-6 rounded-2xl shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Saved Personal Profile</h3>
+                <p class="text-xs text-slate-500">This data powers the agent's form-filling capabilities</p>
+              </div>
+              <button onclick="saveUserProfile()" class="px-3.5 py-1.5 rounded-xl bg-[#0E7979] text-white text-xs font-semibold hover:bg-[#0b5e5e] transition">Save Profile</button>
+            </div>
+
+            <form id="profile-form" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Full Legal Name</label>
+                <input type="text" id="prof-name" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Email Address</label>
+                <input type="email" id="prof-email" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Phone Number</label>
+                <input type="text" id="prof-phone" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Date of Birth</label>
+                <input type="text" id="prof-dob" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block font-semibold text-slate-700 mb-1">Residential Address</label>
+                <input type="text" id="prof-address" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">City</label>
+                <input type="text" id="prof-city" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Pincode</label>
+                <input type="text" id="prof-pincode" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ID Document Type</label>
+                <input type="text" id="prof-idtype" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ID Number</label>
+                <input type="text" id="prof-idnum" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">College / University</label>
+                <input type="text" id="prof-college" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Degree & CGPA</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" id="prof-degree" placeholder="Degree" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+                  <input type="number" step="0.1" id="prof-cgpa" placeholder="CGPA" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Credentials Vault (5 Cols) -->
+          <div class="lg:col-span-5 card p-6 rounded-2xl shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                  <i data-lucide="key" class="w-4 h-4 text-[#0E7979]"></i> Credentials Vault
+                </h3>
+                <p class="text-xs text-slate-500">Logins saved for portal automation</p>
+              </div>
+              <button onclick="openAddVaultModal()" class="text-xs font-semibold text-[#0E7979] hover:underline">+ Add</button>
+            </div>
+
+            <div id="vault-items-list" class="space-y-3">
+              <p class="text-xs text-slate-400">Loading credentials...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: DATABASE & AUDIT LOG INSPECTOR ==================== -->
+      <section id="view-database" class="hidden space-y-6">
+        <div class="card p-6 rounded-2xl shadow-xs flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="database" class="w-5 h-5 text-[#0E7979]"></i> Relational Database & Tool Execution Audit
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Strict Primary Keys, Foreign Keys, and an immutable log of what went IN and OUT of every tool.</p>
+          </div>
+          <button onclick="loadToolAudit()" class="text-xs font-semibold text-[#0E7979] flex items-center gap-1 bg-[#e6f5f5] px-3 py-1.5 rounded-xl">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Audit Log
+          </button>
+        </div>
+
+        <!-- Tool Audit Table -->
+        <div class="card rounded-2xl shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-100/50">
+            <span class="text-xs font-bold text-slate-800">Tool Execution Telemetry (What went IN $\to$ What came OUT)</span>
+            <span class="text-[11px] text-slate-500 font-mono">Table: tool_executions (PK: id)</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50/70 text-slate-400 font-bold uppercase text-[10px]">
+              <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[10px]">
                 <tr>
                   <th class="py-3 px-4">ID</th>
+                  <th class="py-3 px-4">Tool Name</th>
+                  <th class="py-3 px-4">Input Payload (What Went IN)</th>
+                  <th class="py-3 px-4">Output Payload (What Came OUT)</th>
+                  <th class="py-3 px-4">Duration</th>
                   <th class="py-3 px-4">Status</th>
-                  <th class="py-3 px-4">Target Portal</th>
-                  <th class="py-3 px-4">Goal / Extraction</th>
-                  <th class="py-3 px-4">Interval</th>
-                  <th class="py-3 px-4">Last Result</th>
-                  <th class="py-3 px-4 text-right">Actions</th>
+                  <th class="py-3 px-4">Timestamp</th>
                 </tr>
               </thead>
-              <tbody id="full-monitors-tbody" class="divide-y divide-slate-100 text-slate-700">
-                <tr><td colspan="7" class="py-8 text-center text-slate-400">Loading monitors...</td></tr>
+              <tbody id="tool-audit-tbody" class="divide-y divide-slate-200 text-slate-700 font-mono text-[11px]">
+                <tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">Loading tool executions audit log...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Live Alerts Feed -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-            <i data-lucide="bell" class="w-4 h-4 text-brand-600"></i> Alert Log & Notifications
-          </h3>
-          <div id="full-alerts-list" class="space-y-3">
-            <p class="text-xs text-slate-400">Loading alerts history...</p>
+        <!-- Database Schema Overview -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+          <div class="card p-4 rounded-xl space-y-1">
+            <p class="font-bold text-slate-900 font-sans">users (PK: id)</p>
+            <p class="text-slate-500 text-[11px]">• id (TEXT PK)</p>
+            <p class="text-slate-500 text-[11px]">• email (UNIQUE)</p>
+            <p class="text-slate-500 text-[11px]">• full_name, role</p>
+          </div>
+          <div class="card p-4 rounded-xl space-y-1">
+            <p class="font-bold text-slate-900 font-sans">profiles (FK: user_id)</p>
+            <p class="text-slate-500 text-[11px]">• id (INT PK)</p>
+            <p class="text-slate-500 text-[11px]">• user_id (FK CASCADE)</p>
+            <p class="text-slate-500 text-[11px]">• dob, id_number, college</p>
+          </div>
+          <div class="card p-4 rounded-xl space-y-1">
+            <p class="font-bold text-slate-900 font-sans">tasks (FK: user_id)</p>
+            <p class="text-slate-500 text-[11px]">• id (INT PK)</p>
+            <p class="text-slate-500 text-[11px]">• priority, status</p>
+            <p class="text-slate-500 text-[11px]">• target_url, due_date</p>
+          </div>
+          <div class="card p-4 rounded-xl space-y-1">
+            <p class="font-bold text-slate-900 font-sans">snapshots (FK: monitor_id)</p>
+            <p class="text-slate-500 text-[11px]">• id (INT PK)</p>
+            <p class="text-slate-500 text-[11px]">• monitor_id (FK CASCADE)</p>
+            <p class="text-slate-500 text-[11px]">• result (TEXT JSON)</p>
           </div>
         </div>
       </section>
 
-      <!-- Placeholder Views for Calendar / Dues / Tasks -->
-      <section id="view-calendar" class="hidden space-y-6">
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center">
-          <i data-lucide="calendar" class="w-10 h-10 text-brand-500 mx-auto mb-3"></i>
-          <h3 class="text-base font-bold text-slate-800">LifePilot Calendar Sync</h3>
-          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Automatically aggregates upcoming deadlines from monitored university portals, bill due dates, and flight schedules.</p>
+      <!-- ==================== VIEW: BACKGROUND MONITORS FULL ==================== -->
+      <section id="view-monitoring" class="hidden space-y-6">
+        <div class="card p-6 rounded-2xl shadow-xs flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Background Watchers & Automated Checks</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Continuous monitors running via TinyFish and verified with plain Python diffing.</p>
+          </div>
+          <button onclick="openNewMonitorModal()" class="px-4 py-2 rounded-xl bg-[#0E7979] hover:bg-[#0b5e5e] text-white text-xs font-semibold flex items-center gap-2 transition">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Monitor
+          </button>
         </div>
-      </section>
 
-      <section id="view-dues" class="hidden space-y-6">
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center">
-          <i data-lucide="wallet" class="w-10 h-10 text-emerald-500 mx-auto mb-3"></i>
-          <h3 class="text-base font-bold text-slate-800">Dues & Refunds Center</h3>
-          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Monitors utility portals and follows refunds from airline cancelation directly to your bank credit.</p>
-        </div>
-      </section>
-
-      <section id="view-tasks" class="hidden space-y-6">
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center">
-          <i data-lucide="check-square" class="w-10 h-10 text-purple-500 mx-auto mb-3"></i>
-          <h3 class="text-base font-bold text-slate-800">Tasks & Applications</h3>
-          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Passport tracking, exam applications, and job portal notices kept on continuous watch.</p>
+        <div class="card rounded-2xl shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[10px]">
+                <tr>
+                  <th class="py-3 px-4">ID</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4">Target URL</th>
+                  <th class="py-3 px-4">Goal</th>
+                  <th class="py-3 px-4">Interval</th>
+                  <th class="py-3 px-4">Last Result</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="full-monitors-tbody" class="divide-y divide-slate-200 text-slate-700">
+                <tr><td colspan="7" class="py-6 text-center text-slate-400">Loading monitors...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -534,169 +547,234 @@
   </main>
 
   <!-- ==================== FLOATING ACTION BUTTON (AI ASSISTANT) ==================== -->
-  <button onclick="openGoalModal()" class="fixed bottom-8 right-8 w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white shadow-xl shadow-brand-600/40 hover:scale-105 active:scale-95 flex items-center justify-center transition z-40 group" title="Chat with LifePilot AI">
+  <button onclick="openGoalModal()" class="fixed bottom-8 right-8 w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0E7979] to-teal-600 text-white shadow-xl shadow-teal-900/30 hover:scale-105 active:scale-95 flex items-center justify-center transition z-40 group" title="Open LifePilot Agent Console">
     <i data-lucide="sparkles" class="w-6 h-6 animate-pulse"></i>
     <span class="absolute right-16 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap shadow-md pointer-events-none">
-      Ask LifePilot AI
+      LifePilot Agent Console
     </span>
   </button>
 
   <!-- ==================== AI AGENT CHAT DRAWER ==================== -->
-  <div id="ai-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl border-l border-slate-100 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+  <div id="ai-drawer" class="fixed inset-y-0 right-0 w-full max-w-md card shadow-2xl border-l border-slate-300 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
     <!-- Drawer Header -->
-    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-100/60">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-sm">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <div class="w-8 h-8 rounded-xl bg-[#0E7979] text-white flex items-center justify-center shadow-xs">
+          <i data-lucide="bot" class="w-4 h-4"></i>
         </div>
         <div>
-          <h3 class="text-xs font-bold text-slate-900">LifePilot Agent</h3>
-          <p class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online & Autonomous
+          <h3 class="text-xs font-bold text-slate-900">LifePilot Autonomous Agent</h3>
+          <p class="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Persistent Memory Active
           </p>
         </div>
       </div>
-      <button onclick="closeGoalModal()" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600">
+      <button onclick="closeGoalModal()" class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
 
-    <!-- Chat Messages & Steps Scroll Area -->
+    <!-- Chat Messages Scroll Area -->
     <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar text-xs">
       <div class="flex items-start gap-2.5">
-        <div class="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs shrink-0">
+        <div class="w-7 h-7 rounded-lg bg-[#e6f5f5] text-[#0E7979] font-bold flex items-center justify-center text-xs shrink-0">
           AI
         </div>
-        <div class="bg-slate-100 rounded-2xl rounded-tl-sm p-3 text-slate-700 leading-relaxed max-w-[85%]">
-          Hello Alex! State any web goal in plain English (e.g. <i>"Check my refund on [URL]"</i> or <i>"Watch passport application on [URL]"</i>). I will plan, browse, and notify you!
+        <div class="bg-slate-200/60 rounded-2xl rounded-tl-sm p-3 text-slate-700 leading-relaxed max-w-[85%]">
+          Hello! I have your full profile and credentials loaded. Tell me any life admin goal (e.g. <i>"Auto-fill scholarship on [URL]"</i>, <i>"Track refund on [URL]"</i>, or <i>"Check passport status"</i>).
         </div>
       </div>
     </div>
 
-    <!-- OTP / Paused Prompt Card (Hidden by default) -->
+    <!-- OTP Input Prompt -->
     <div id="otp-container" class="hidden p-4 bg-amber-50 border-t border-amber-200">
       <div class="flex items-start gap-2.5 mb-2.5">
         <i data-lucide="key-round" class="w-4 h-4 text-amber-600 mt-0.5 shrink-0"></i>
         <div>
-          <p class="text-xs font-bold text-amber-900" id="otp-question-text">Agent needs your input</p>
-          <p class="text-[11px] text-amber-700">Enter the requested OTP or answer to resume execution:</p>
+          <p class="text-xs font-bold text-amber-900" id="otp-question-text">Authentication Input Required</p>
+          <p class="text-[11px] text-amber-700">Enter the requested OTP or credential to resume:</p>
         </div>
       </div>
       <div class="flex gap-2">
-        <input type="text" id="otp-input" placeholder="e.g. 482910" class="flex-1 bg-white border border-amber-300 rounded-xl px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500">
-        <button onclick="submitOtpReply()" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition">
+        <input type="text" id="otp-input" placeholder="e.g. 482910" class="flex-1 bg-slate-100 border border-amber-300 rounded-xl px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500">
+        <button onclick="submitOtpReply()" class="px-3.5 py-1.5 bg-[#0E7979] hover:bg-[#0b5e5e] text-white rounded-xl text-xs font-semibold transition">
           Submit
         </button>
       </div>
     </div>
 
     <!-- Input Footer -->
-    <div class="p-4 border-t border-slate-100 bg-white">
+    <div class="p-4 border-t border-slate-200 card">
       <form onsubmit="handleAgentSubmit(event)" class="flex gap-2">
-        <input type="text" id="agent-input" placeholder="Say: Check refund on http://..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
-        <button type="submit" id="agent-send-btn" class="w-9 h-9 rounded-xl bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-md shadow-brand-600/20 transition">
+        <input type="text" id="agent-input" placeholder="e.g. Auto-fill my scholarship on http://..." class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20 focus:border-[#0E7979] transition" />
+        <button type="submit" class="w-9 h-9 rounded-xl bg-[#0E7979] hover:bg-[#0b5e5e] text-white flex items-center justify-center shrink-0 shadow-sm transition">
           <i data-lucide="send" class="w-4 h-4"></i>
         </button>
       </form>
       <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 px-1">
-        <span>Cheapest tool first • Read-only safe</span>
-        <span>Groq LLM + TinyFish</span>
+        <span>Active User: <b id="chat-active-user-name" class="text-slate-600">Riya Sharma</b></span>
+        <span>Audit Logged to SQLite</span>
       </div>
     </div>
   </div>
 
-  <!-- ==================== QUICK MONITOR MODAL ==================== -->
-  <div id="new-monitor-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold text-slate-900">Add Background Monitor</h3>
-        <button onclick="closeNewMonitorModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+  <!-- ==================== MULTI-ACCOUNT LOGIN MODAL ==================== -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="card rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">Switch Account / Login</h3>
+          <p class="text-xs text-slate-500">Experience true multi-tenant profile isolation</p>
+        </div>
+        <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <form onsubmit="handleCreateMonitor(event)" class="space-y-3 text-xs">
+
+      <!-- Quick 1-Click Login Pills for Judges/Mentor -->
+      <div>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">1-Click Quick Login</p>
+        <div class="space-y-2">
+          <button onclick="quickLogin('riya')" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-[#0E7979] text-white font-bold text-xs flex items-center justify-center">RS</span>
+              <div>
+                <p class="text-xs font-bold text-slate-900">Riya Sharma (Slide 2 Persona)</p>
+                <p class="text-[11px] text-slate-500">Software Engineer, Delhi • Flight refund & Passport</p>
+              </div>
+            </div>
+            <span class="text-xs text-[#0E7979] font-bold">Select →</span>
+          </button>
+
+          <button onclick="quickLogin('alex')" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-700 text-white font-bold text-xs flex items-center justify-center">AM</span>
+              <div>
+                <p class="text-xs font-bold text-slate-900">Alex Morgan</p>
+                <p class="text-[11px] text-slate-500">Product Designer, Bangalore • Scholarship Applicant</p>
+              </div>
+            </div>
+            <span class="text-xs text-[#0E7979] font-bold">Select →</span>
+          </button>
+
+          <button onclick="quickLogin('david')" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-100 hover:bg-[#e6f5f5] hover:border-[#0E7979] transition flex items-center justify-between text-left">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-slate-700 text-white font-bold text-xs flex items-center justify-center">DC</span>
+              <div>
+                <p class="text-xs font-bold text-slate-900">David Chen (Slide 4 Freelancer)</p>
+                <p class="text-[11px] text-slate-500">Consultant, Mumbai • GST compliance & invoices</p>
+              </div>
+            </div>
+            <span class="text-xs text-[#0E7979] font-bold">Select →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Password Login Form -->
+      <form onsubmit="handleManualLogin(event)" class="border-t border-slate-200 pt-3 space-y-3 text-xs">
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">Target Portal URL</label>
-          <input type="url" id="m-url" required placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          <label class="block font-semibold text-slate-700 mb-1">Email</label>
+          <input type="email" id="login-email" placeholder="riya@lifepilot.ai" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2" required />
         </div>
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">What to watch (Goal)</label>
-          <input type="text" id="m-goal" required placeholder="read the refund status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          <label class="block font-semibold text-slate-700 mb-1">Password</label>
+          <input type="password" id="login-pass" value="password123" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2" required />
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Fields to extract</label>
-            <input type="text" id="m-fields" required placeholder="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Interval (minutes)</label>
-            <input type="number" id="m-interval" value="1" min="0.5" step="0.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
-          </div>
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeNewMonitorModal()" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">Cancel</button>
-          <button type="submit" class="px-4 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold">Create Monitor</button>
-        </div>
+        <button type="submit" class="w-full py-2 bg-[#0E7979] hover:bg-[#0b5e5e] text-white font-semibold rounded-xl transition">
+          Login
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- ==================== ALERTS FEED MODAL ==================== -->
-  <div id="alerts-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-          <i data-lucide="bell" class="w-4 h-4 text-brand-600"></i> Notifications & Alerts
-        </h3>
-        <button onclick="closeAlertsModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+  <!-- ==================== NEW TASK MODAL ==================== -->
+  <div id="new-task-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="card rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-sm font-bold text-slate-900">Add Real Life Admin Task</h3>
+        <button onclick="closeNewTaskModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <div id="modal-alerts-content" class="max-h-96 overflow-y-auto space-y-2.5 custom-scrollbar text-xs">
-        <p class="text-slate-400 text-center py-4">Loading alerts...</p>
-      </div>
+      <form onsubmit="handleCreateTask(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Task Title</label>
+          <input type="text" id="nt-title" placeholder="e.g. Renew Passport or Pay Electricity" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Target Portal URL (optional)</label>
+          <input type="url" id="nt-url" placeholder="https://..." class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Priority</label>
+            <select id="nt-priority" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium">
+              <option value="URGENT">URGENT (Top)</option>
+              <option value="HIGH">HIGH</option>
+              <option value="MEDIUM" selected>MEDIUM</option>
+              <option value="LOW">LOW</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Due Date</label>
+            <input type="text" id="nt-due" placeholder="Today 8:00 PM" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2" />
+          </div>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeNewTaskModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-[#0E7979] text-white font-semibold hover:bg-[#0b5e5e]">Create Task</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- ==================== JAVASCRIPT ==================== -->
   <script>
+    // Current Active User (Default to Riya Sharma from Slide 2)
+    let currentUser = {
+      id: "riya",
+      name: "Riya Sharma",
+      email: "riya@lifepilot.ai",
+      role: "Software Engineer in Delhi",
+      avatar: "RS"
+    };
+
     let activeGoalId = null;
 
-    // Initialize UI on load
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
-      document.getElementById("current-date-text").textContent = new Date().toLocaleDateString('en-US', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-      });
+      loadUserProfile();
+      loadUserTasks();
       refreshMonitors();
-      refreshAlerts();
-      // Poll alerts & monitors every 15s
-      setInterval(() => { refreshMonitors(); refreshAlerts(); }, 15000);
+      loadVaultItems();
+      loadChatHistory();
+      setInterval(() => { loadUserTasks(); refreshMonitors(); }, 12000);
     });
 
-    // Tab Navigation
+    // Switch View Tabs
     function switchTab(tabId) {
-      const views = ['dashboard', 'monitoring', 'calendar', 'dues', 'tasks'];
+      const views = ['dashboard', 'formfill', 'vault', 'database', 'monitoring'];
       views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
         const nav = document.getElementById(`nav-${v}`);
         if (el) el.classList.toggle('hidden', v !== tabId);
         if (nav) {
           if (v === tabId) {
-            nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-brand-50 text-brand-700";
+            nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-[#e6f5f5] text-[#0E7979]";
           } else {
-            nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition";
+            nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition";
           }
         }
       });
       const titles = {
-        dashboard: "Dashboard",
-        monitoring: "Activity & Monitoring",
-        calendar: "Calendar",
-        dues: "Dues & Payments",
-        tasks: "Tasks & Applications"
+        dashboard: "Personal Command Center",
+        formfill: "Autonomous Form-Filling Center",
+        vault: "Saved Identity Profile & Credentials Vault",
+        database: "Relational DB & Tool Telemetry",
+        monitoring: "Background Watchers"
       };
-      document.getElementById("page-title").textContent = titles[tabId] || "Dashboard";
+      document.getElementById("page-title").textContent = titles[tabId] || "Command Center";
+      if (tabId === 'database') loadToolAudit();
       lucide.createIcons();
     }
 
-    // Modal & Drawer toggles
+    // Modal toggles
     function openGoalModal() {
       document.getElementById("ai-drawer").classList.remove("translate-x-full");
       document.getElementById("agent-input").focus();
@@ -704,163 +782,339 @@
     function closeGoalModal() {
       document.getElementById("ai-drawer").classList.add("translate-x-full");
     }
-    function openNewMonitorModal() {
-      document.getElementById("new-monitor-modal").classList.remove("hidden");
+    function openLoginModal() {
+      document.getElementById("login-modal").classList.remove("hidden");
     }
-    function closeNewMonitorModal() {
-      document.getElementById("new-monitor-modal").classList.add("hidden");
+    function closeLoginModal() {
+      document.getElementById("login-modal").classList.add("hidden");
     }
-    function openAlertsModal() {
-      document.getElementById("alerts-modal").classList.remove("hidden");
-      refreshAlerts();
+    function openNewTaskModal() {
+      document.getElementById("new-task-modal").classList.remove("hidden");
     }
-    function closeAlertsModal() {
-      document.getElementById("alerts-modal").classList.add("hidden");
+    function closeNewTaskModal() {
+      document.getElementById("new-task-modal").classList.add("hidden");
     }
 
-    // Refresh Monitors
-    async function refreshMonitors() {
+    // Quick Login Switcher
+    async function quickLogin(userId) {
       try {
-        const res = await fetch('/monitors');
-        const monitors = await res.json();
-        
-        // Update badge
-        document.getElementById("active-monitors-badge").textContent = monitors.filter(m => m.status === 'active').length;
+        const res = await fetch(`/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: `${userId}@lifepilot.ai`, password: 'password123' })
+        });
+        const data = await res.json();
+        if (data.user) {
+          currentUser = {
+            id: data.user.id,
+            name: data.user.full_name,
+            email: data.user.email,
+            role: data.user.role,
+            avatar: data.user.avatar_initials
+          };
+          applyUserChange();
+          closeLoginModal();
+        }
+      } catch (err) {
+        alert("Login error: " + err);
+      }
+    }
 
-        // Render in Dashboard card
-        const dashList = document.getElementById("dashboard-monitors-list");
-        if (monitors.length === 0) {
-          dashList.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">No active monitors yet. Click "+ Ask LifePilot" to create one!</div>`;
-        } else {
-          dashList.innerHTML = monitors.slice(0, 4).map(m => `
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100/70 transition">
-              <div class="min-w-0 pr-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500' : 'bg-slate-300'}"></span>
-                  <p class="text-xs font-bold text-slate-800 truncate">${escapeHtml(m.url)}</p>
+    async function handleManualLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-pass").value;
+      const res = await fetch(`/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (data.user) {
+        currentUser = {
+          id: data.user.id,
+          name: data.user.full_name,
+          email: data.user.email,
+          role: data.user.role,
+          avatar: data.user.avatar_initials
+        };
+        applyUserChange();
+        closeLoginModal();
+      } else {
+        alert("Invalid credentials. Try password123");
+      }
+    }
+
+    function applyUserChange() {
+      document.getElementById("user-name").textContent = currentUser.name;
+      document.getElementById("user-role").textContent = currentUser.role;
+      document.getElementById("user-avatar").textContent = currentUser.avatar;
+      document.getElementById("top-user-name").textContent = currentUser.name.split(' ')[0];
+      document.getElementById("top-user-avatar").textContent = currentUser.avatar;
+      document.getElementById("hero-greeting").textContent = `Good morning, ${currentUser.name.split(' ')[0]} 👋`;
+      document.getElementById("chat-active-user-name").textContent = currentUser.name;
+
+      loadUserProfile();
+      loadUserTasks();
+      refreshMonitors();
+      loadVaultItems();
+      loadChatHistory();
+    }
+
+    // Load Tasks & Priority Changer
+    async function loadUserTasks() {
+      try {
+        const res = await fetch(`/tasks?user_id=${currentUser.id}`);
+        const tasks = await res.json();
+
+        document.getElementById("stat-tasks-count").textContent = String(tasks.length).padStart(2, '0');
+        document.getElementById("stat-urgent-count").textContent = String(tasks.filter(t => t.priority === 'URGENT').length).padStart(2, '0');
+
+        const container = document.getElementById("dynamic-tasks-list");
+        if (tasks.length === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">No tasks recorded in database. Click + Add to create one!</p>`;
+          return;
+        }
+
+        container.innerHTML = tasks.map(t => {
+          const pColors = {
+            URGENT: 'bg-rose-100 text-rose-800 border-rose-300',
+            HIGH: 'bg-amber-100 text-amber-800 border-amber-300',
+            MEDIUM: 'bg-teal-50 text-[#0E7979] border-teal-200',
+            LOW: 'bg-slate-200 text-slate-700 border-slate-300'
+          };
+          const bColors = {
+            URGENT: 'border-l-rose-500',
+            HIGH: 'border-l-amber-500',
+            MEDIUM: 'border-l-[#0E7979]',
+            LOW: 'border-l-slate-300'
+          };
+
+          return `
+            <div class="p-3.5 rounded-xl border-l-4 ${bColors[t.priority] || 'border-l-slate-300'} bg-slate-100/70 hover:bg-slate-200/50 transition flex items-center justify-between gap-3 text-xs">
+              <div class="min-w-0 flex-1">
+                <p class="font-bold text-slate-900 truncate">${escapeHtml(t.title)}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] text-slate-500">${t.due_date || 'No due date'}</span>
+                  ${t.target_url ? `<span class="text-[10px] font-mono text-[#0E7979] truncate max-w-xs">🔗 ${escapeHtml(t.target_url)}</span>` : ''}
                 </div>
-                <p class="text-[11px] text-slate-500 mt-0.5 truncate">${escapeHtml(m.goal)}</p>
               </div>
+
+              <!-- Interactive Priority Pill -->
               <div class="flex items-center gap-2 shrink-0">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                  m.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
-                  m.status === 'active' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
-                }">${m.status.toUpperCase()}</span>
-                <button onclick="runMonitorNow(${m.id})" class="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-brand-600" title="Run Check Now">
-                  <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                <select onchange="updateTaskPriority(${t.id}, this.value)" class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-lg border cursor-pointer focus:outline-none ${pColors[t.priority] || 'bg-slate-100'}">
+                  <option value="URGENT" ${t.priority === 'URGENT' ? 'selected' : ''}>🔴 URGENT</option>
+                  <option value="HIGH" ${t.priority === 'HIGH' ? 'selected' : ''}>🟠 HIGH</option>
+                  <option value="MEDIUM" ${t.priority === 'MEDIUM' ? 'selected' : ''}>🟡 MEDIUM</option>
+                  <option value="LOW" ${t.priority === 'LOW' ? 'selected' : ''}>⚪ LOW</option>
+                </select>
+
+                ${t.target_url ? `
+                  <button onclick="runTaskWithAgent('${escapeHtml(t.title)}', '${escapeHtml(t.target_url)}')" class="p-1.5 rounded-lg bg-[#0E7979] hover:bg-[#0b5e5e] text-white" title="Execute with LifePilot AI">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                  </button>
+                ` : ''}
+
+                <button onclick="deleteTaskItem(${t.id})" class="p-1 text-slate-400 hover:text-rose-600 rounded">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
             </div>
-          `).join('');
-        }
-
-        // Render in Full Table
-        const tbody = document.getElementById("full-monitors-tbody");
-        if (monitors.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No monitors created yet.</td></tr>`;
-        } else {
-          tbody.innerHTML = monitors.map(m => `
-            <tr class="hover:bg-slate-50/60 transition">
-              <td class="py-3 px-4 font-mono text-[11px] font-bold text-slate-400">#${m.id}</td>
-              <td class="py-3 px-4">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${
-                  m.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
-                  m.status === 'active' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
-                }">${m.status}</span>
-              </td>
-              <td class="py-3 px-4 max-w-xs truncate font-medium text-slate-800" title="${escapeHtml(m.url)}">${escapeHtml(m.url)}</td>
-              <td class="py-3 px-4 max-w-xs truncate text-slate-600">${escapeHtml(m.goal)}</td>
-              <td class="py-3 px-4 text-slate-500">${m.interval_seconds / 60}m</td>
-              <td class="py-3 px-4 font-mono text-[11px] text-slate-600">${m.last_result ? JSON.stringify(m.last_result) : '-'}</td>
-              <td class="py-3 px-4 text-right space-x-1 shrink-0">
-                <button onclick="runMonitorNow(${m.id})" class="p-1 hover:bg-slate-200 rounded text-brand-600" title="Run Now"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>
-                <button onclick="togglePauseMonitor(${m.id}, '${m.status}')" class="p-1 hover:bg-slate-200 rounded text-amber-600" title="Pause/Resume">
-                  <i data-lucide="${m.status === 'active' ? 'pause' : 'play-circle'}" class="w-3.5 h-3.5"></i>
-                </button>
-                <button onclick="deleteMonitor(${m.id})" class="p-1 hover:bg-slate-200 rounded text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-              </td>
-            </tr>
-          `).join('');
-        }
+          `;
+        }).join('');
         lucide.createIcons();
       } catch (err) {
-        console.error("Failed to load monitors:", err);
+        console.error("Failed to load tasks:", err);
       }
     }
 
-    // Refresh Alerts
-    async function refreshAlerts() {
-      try {
-        const res = await fetch('/alerts');
-        const alerts = await res.json();
-        
-        const badge = document.getElementById("alerts-count-badge");
-        if (alerts.length > 0) badge.classList.remove("hidden");
-        else badge.classList.add("hidden");
+    async function updateTaskPriority(taskId, newPriority) {
+      await fetch(`/tasks/${taskId}/priority`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priority: newPriority })
+      });
+      loadUserTasks();
+    }
 
-        const list = document.getElementById("full-alerts-list");
-        const modalContent = document.getElementById("modal-alerts-content");
-        
-        const html = alerts.length === 0 ? `<p class="text-xs text-slate-400 py-3">No alerts yet.</p>` : alerts.map(a => `
-          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3 text-xs">
-            <span class="text-base shrink-0">🔔</span>
-            <div class="flex-1">
-              <p class="font-medium text-slate-800 whitespace-pre-line leading-relaxed">${escapeHtml(a.message)}</p>
-              <p class="text-[10px] text-slate-400 mt-1">${new Date(a.created_at * 1000).toLocaleString()}</p>
-            </div>
-          </div>
-        `).join('');
-
-        if (list) list.innerHTML = html;
-        if (modalContent) modalContent.innerHTML = html;
-      } catch (err) {
-        console.error("Failed to load alerts:", err);
+    async function deleteTaskItem(taskId) {
+      if (confirm("Delete this task?")) {
+        await fetch(`/tasks/${taskId}`, { method: 'DELETE' });
+        loadUserTasks();
       }
     }
 
-    // Run Monitor Now
-    async function runMonitorNow(id) {
-      try {
-        const res = await fetch(`/monitors/${id}/run`, { method: 'POST' });
-        const data = await res.json();
-        refreshMonitors();
-        refreshAlerts();
-      } catch (e) {
-        alert("Error running check: " + e);
-      }
-    }
-
-    // Pause / Resume
-    async function togglePauseMonitor(id, status) {
-      const action = status === 'active' ? 'pause' : 'resume';
-      await fetch(`/monitors/${id}/${action}`, { method: 'POST' });
-      refreshMonitors();
-    }
-
-    // Delete Monitor
-    async function deleteMonitor(id) {
-      if (confirm(`Are you sure you want to delete monitor #${id}?`)) {
-        await fetch(`/monitors/${id}`, { method: 'DELETE' });
-        refreshMonitors();
-      }
-    }
-
-    // Create Monitor Manual
-    async function handleCreateMonitor(e) {
+    async function handleCreateTask(e) {
       e.preventDefault();
-      const url = document.getElementById('m-url').value;
-      const goal = document.getElementById('m-goal').value;
-      const fields = document.getElementById('m-fields').value.split(',').map(s => s.trim());
-      const interval = parseFloat(document.getElementById('m-interval').value) * 60;
+      const title = document.getElementById("nt-title").value;
+      const target_url = document.getElementById("nt-url").value;
+      const priority = document.getElementById("nt-priority").value;
+      const due_date = document.getElementById("nt-due").value;
 
-      // Ask agent to create monitor
-      closeNewMonitorModal();
+      await fetch(`/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: currentUser.id, title, target_url, priority, due_date })
+      });
+      closeNewTaskModal();
+      loadUserTasks();
+    }
+
+    // Form Autofill Automation
+    async function runScholarshipAutofill() {
       openGoalModal();
-      document.getElementById('agent-input').value = `Set up a background monitor on ${url} to ${goal} every ${interval/60} minutes`;
+      document.getElementById("agent-input").value = `Auto-fill my application on http://localhost:9000/scholarship using my saved profile`;
       handleAgentSubmit(new Event('submit'));
     }
 
-    // Chat / AI Goal Submission
+    function runTaskWithAgent(title, url) {
+      openGoalModal();
+      document.getElementById("agent-input").value = `Execute task: "${title}" on ${url}`;
+      handleAgentSubmit(new Event('submit'));
+    }
+
+    // Profile & Vault Loaders
+    async function loadUserProfile() {
+      try {
+        const res = await fetch(`/profile?user_id=${currentUser.id}`);
+        const p = await res.json();
+        document.getElementById("prof-name").value = p.full_name || "";
+        document.getElementById("prof-email").value = p.email || "";
+        document.getElementById("prof-phone").value = p.phone || "";
+        document.getElementById("prof-dob").value = p.dob || "";
+        document.getElementById("prof-address").value = p.address || "";
+        document.getElementById("prof-city").value = p.city || "";
+        document.getElementById("prof-pincode").value = p.pincode || "";
+        document.getElementById("prof-idtype").value = p.id_type || "";
+        document.getElementById("prof-idnum").value = p.id_number || "";
+        document.getElementById("prof-college").value = p.college || "";
+        document.getElementById("prof-degree").value = p.degree || "";
+        document.getElementById("prof-cgpa").value = p.cgpa || 0;
+
+        // Update previews
+        document.getElementById("ff-preview-name").textContent = p.full_name || "-";
+        document.getElementById("ff-preview-email").textContent = p.email || "-";
+        document.getElementById("ff-preview-phone").textContent = p.phone || "-";
+        document.getElementById("ff-preview-id").textContent = p.id_number || "-";
+        document.getElementById("ff-preview-college").textContent = p.college || "-";
+        document.getElementById("ff-preview-degree").textContent = `${p.degree} (${p.cgpa})`;
+      } catch (e) {
+        console.error("Profile load err:", e);
+      }
+    }
+
+    async function saveUserProfile() {
+      const data = {
+        user_id: currentUser.id,
+        full_name: document.getElementById("prof-name").value,
+        email: document.getElementById("prof-email").value,
+        phone: document.getElementById("prof-phone").value,
+        dob: document.getElementById("prof-dob").value,
+        address: document.getElementById("prof-address").value,
+        city: document.getElementById("prof-city").value,
+        pincode: document.getElementById("prof-pincode").value,
+        id_type: document.getElementById("prof-idtype").value,
+        id_number: document.getElementById("prof-idnum").value,
+        college: document.getElementById("prof-college").value,
+        degree: document.getElementById("prof-degree").value,
+        cgpa: parseFloat(document.getElementById("prof-cgpa").value) || 0
+      };
+      await fetch('/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      alert("Profile updated in SQLite database!");
+      loadUserProfile();
+    }
+
+    async function loadVaultItems() {
+      try {
+        const res = await fetch(`/vault?user_id=${currentUser.id}`);
+        const items = await res.json();
+        document.getElementById("stat-vault-count").textContent = String(items.length).padStart(2, '0');
+        const list = document.getElementById("vault-items-list");
+        if (items.length === 0) {
+          list.innerHTML = `<p class="text-xs text-slate-400 py-3">No saved portal logins for this user.</p>`;
+          return;
+        }
+        list.innerHTML = items.map(v => `
+          <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+            <div>
+              <p class="font-bold text-slate-900">${escapeHtml(v.service_name)}</p>
+              <p class="text-[11px] text-slate-500 font-mono mt-0.5">${escapeHtml(v.username)} • ${v.password_masked}</p>
+            </div>
+            <button onclick="deleteVaultItem(${v.id})" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      } catch (e) {
+        console.error("Vault err:", e);
+      }
+    }
+
+    async function deleteVaultItem(id) {
+      if (confirm("Delete this credential?")) {
+        await fetch(`/vault/${id}`, { method: 'DELETE' });
+        loadVaultItems();
+      }
+    }
+
+    // Tool Telemetry / Database Audit Log
+    async function loadToolAudit() {
+      try {
+        const res = await fetch(`/tools/audit`);
+        const rows = await res.json();
+        const tbody = document.getElementById("tool-audit-tbody");
+        if (rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No tool runs recorded yet.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = rows.map(r => `
+          <tr class="hover:bg-slate-200/50 transition">
+            <td class="py-2.5 px-4 font-bold text-slate-400">#${r.id}</td>
+            <td class="py-2.5 px-4 font-bold text-[#0E7979]">${r.tool_name}</td>
+            <td class="py-2.5 px-4 max-w-xs truncate text-slate-600" title="${escapeHtml(r.input_payload)}">${escapeHtml(r.input_payload)}</td>
+            <td class="py-2.5 px-4 max-w-xs truncate text-slate-600" title="${escapeHtml(r.output_payload)}">${escapeHtml(r.output_payload)}</td>
+            <td class="py-2.5 px-4 text-slate-500">${Math.round(r.duration_ms)}ms</td>
+            <td class="py-2.5 px-4"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${r.status === 'SUCCESS' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${r.status}</span></td>
+            <td class="py-2.5 px-4 text-slate-400 text-[10px]">${new Date(r.created_at * 1000).toLocaleTimeString()}</td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error("Audit load err:", e);
+      }
+    }
+
+    // Persistent Chat Memory
+    async function loadChatHistory() {
+      try {
+        const res = await fetch(`/chat/history?user_id=${currentUser.id}`);
+        const history = await res.json();
+        const container = document.getElementById("chat-messages");
+        if (history.length > 0) {
+          container.innerHTML = history.map(m => `
+            <div class="flex items-start gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}">
+              ${m.role === 'user' ? '' : `<div class="w-7 h-7 rounded-lg bg-[#e6f5f5] text-[#0E7979] font-bold flex items-center justify-center text-xs shrink-0">AI</div>`}
+              <div class="${m.role === 'user' ? 'bg-[#0E7979] text-white rounded-tr-sm' : 'bg-slate-200/60 text-slate-800 rounded-tl-sm'} rounded-2xl p-3 leading-relaxed max-w-[85%] text-xs">
+                ${m.steps && m.steps.length > 0 ? `
+                  <div class="mb-2 space-y-1 border-b border-slate-300 pb-1.5">
+                    ${m.steps.map(st => `<div class="text-[10px] text-slate-500 font-mono">⚡ ${st.tool}</div>`).join('')}
+                  </div>
+                ` : ''}
+                ${escapeHtml(m.content)}
+              </div>
+              ${m.role === 'user' ? `<div class="w-7 h-7 rounded-lg bg-slate-700 text-white font-bold flex items-center justify-center text-xs shrink-0">${currentUser.avatar}</div>` : ''}
+            </div>
+          `).join('');
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch (e) {
+        console.error("Chat load err:", e);
+      }
+    }
+
+    // Agent Goal Execution
     async function handleAgentSubmit(e) {
       e.preventDefault();
       const input = document.getElementById("agent-input");
@@ -869,13 +1123,13 @@
       input.value = "";
 
       appendChatMessage("user", text);
-      const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping"></span> Thinking & executing tools...</span>`);
+      const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5 text-slate-600"><span class="w-1.5 h-1.5 rounded-full bg-[#0E7979] animate-ping"></span> LifePilot AI is planning and executing tools...</span>`);
 
       try {
         const res = await fetch("/goals", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, user_id: "alex" })
+          body: JSON.stringify({ text, user_id: currentUser.id })
         });
         const data = await res.json();
         activeGoalId = data.goal_id;
@@ -883,24 +1137,21 @@
         loadingEl.remove();
         renderGoalResult(data);
         refreshMonitors();
-        refreshAlerts();
+        loadToolAudit();
       } catch (err) {
-        loadingEl.innerHTML = `<span class="text-rose-600">Error: ${err.message}</span>`;
+        loadingEl.innerHTML = `<span class="text-rose-600">Execution Error: ${err.message}</span>`;
       }
     }
 
-    // Render Steps & Status
     function renderGoalResult(data) {
       let html = `<div class="space-y-2">`;
-
-      // Render tool steps if any
       if (data.steps && data.steps.length > 0) {
-        html += `<div class="space-y-1.5 border-b border-slate-200/60 pb-2 mb-2">`;
+        html += `<div class="space-y-1.5 border-b border-slate-300 pb-2 mb-2">`;
         data.steps.forEach((st, i) => {
           html += `
-            <div class="flex items-center gap-1.5 text-[11px] text-slate-600 bg-white p-1.5 rounded-lg border border-slate-100 shadow-2xs">
-              <span class="font-bold text-brand-600">⚡ Step ${i+1}:</span>
-              <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-[10px]">${st.tool}</span>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-700 bg-slate-100 p-1.5 rounded-lg border border-slate-200">
+              <span class="font-bold text-[#0E7979]">⚡ Step ${i+1}:</span>
+              <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-[10px] text-slate-600">${st.tool}</span>
               <span class="truncate text-slate-500">${st.paused ? 'Paused for user' : (st.output_preview || 'Completed')}</span>
             </div>
           `;
@@ -908,7 +1159,6 @@
         html += `</div>`;
       }
 
-      // Check status
       if (data.status === "waiting_for_user") {
         html += `<p class="font-semibold text-amber-900">${escapeHtml(data.question || 'Please provide information:')}</p>`;
         document.getElementById("otp-question-text").textContent = data.question || "Input required";
@@ -921,12 +1171,10 @@
         html += `<p class="text-slate-600">${escapeHtml(data.answer || data.status)}</p>`;
         document.getElementById("otp-container").classList.add("hidden");
       }
-
       html += `</div>`;
       appendChatMessage("ai", html);
     }
 
-    // Submit OTP / Reply to Paused Goal
     async function submitOtpReply() {
       const input = document.getElementById("otp-input");
       const text = input.value.trim();
@@ -935,7 +1183,7 @@
 
       document.getElementById("otp-container").classList.add("hidden");
       appendChatMessage("user", text);
-      const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping"></span> Resuming agent with your reply...</span>`);
+      const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5 text-slate-600"><span class="w-1.5 h-1.5 rounded-full bg-[#0E7979] animate-ping"></span> Resuming with provided input...</span>`);
 
       try {
         const res = await fetch(`/goals/${activeGoalId}/reply`, {
@@ -947,7 +1195,7 @@
         loadingEl.remove();
         renderGoalResult(data);
         refreshMonitors();
-        refreshAlerts();
+        loadToolAudit();
       } catch (err) {
         loadingEl.innerHTML = `<span class="text-rose-600">Error: ${err.message}</span>`;
       }
@@ -957,29 +1205,89 @@
       const container = document.getElementById("chat-messages");
       const div = document.createElement("div");
       div.className = `flex items-start gap-2.5 ${sender === 'user' ? 'justify-end' : ''}`;
-      
       if (sender === 'user') {
         div.innerHTML = `
-          <div class="bg-brand-600 text-white rounded-2xl rounded-tr-sm p-3 leading-relaxed max-w-[85%] text-xs shadow-sm">
+          <div class="bg-[#0E7979] text-white rounded-2xl rounded-tr-sm p-3 leading-relaxed max-w-[85%] text-xs shadow-xs">
             ${content}
           </div>
-          <div class="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-xs shrink-0">
-            AM
+          <div class="w-7 h-7 rounded-lg bg-slate-700 text-white font-bold flex items-center justify-center text-xs shrink-0">
+            ${currentUser.avatar}
           </div>
         `;
       } else {
         div.innerHTML = `
-          <div class="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs shrink-0">
+          <div class="w-7 h-7 rounded-lg bg-[#e6f5f5] text-[#0E7979] font-bold flex items-center justify-center text-xs shrink-0">
             AI
           </div>
-          <div class="bg-slate-100 rounded-2xl rounded-tl-sm p-3 text-slate-700 leading-relaxed max-w-[85%] text-xs">
+          <div class="bg-slate-200/60 rounded-2xl rounded-tl-sm p-3 text-slate-800 leading-relaxed max-w-[85%] text-xs">
             ${content}
           </div>
         `;
       }
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
-      return div.querySelector(sender === 'user' ? '.bg-brand-600' : '.bg-slate-100');
+      return div.querySelector(sender === 'user' ? '.bg-[#0E7979]' : '.bg-slate-200\\/60');
+    }
+
+    // Refresh Monitors
+    async function refreshMonitors() {
+      try {
+        const res = await fetch(`/monitors?user_id=${currentUser.id}`);
+        const monitors = await res.json();
+        document.getElementById("active-monitors-badge").textContent = monitors.filter(m => m.status === 'active').length;
+        document.getElementById("stat-monitors-count").textContent = String(monitors.length).padStart(2, '0');
+
+        const quickList = document.getElementById("quick-monitors-list");
+        if (monitors.length === 0) {
+          quickList.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">No active watchers for this user.</p>`;
+        } else {
+          quickList.innerHTML = monitors.slice(0, 3).map(m => `
+            <div class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-between text-xs">
+              <div class="truncate pr-2">
+                <p class="font-bold text-slate-900 truncate">${escapeHtml(m.url)}</p>
+                <p class="text-[10px] text-slate-500 truncate">${escapeHtml(m.goal)}</p>
+              </div>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${m.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-teal-50 text-[#0E7979]'}">${m.status.toUpperCase()}</span>
+            </div>
+          `).join('');
+        }
+
+        const tbody = document.getElementById("full-monitors-tbody");
+        if (tbody) {
+          if (monitors.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No monitors created yet.</td></tr>`;
+          } else {
+            tbody.innerHTML = monitors.map(m => `
+              <tr class="hover:bg-slate-200/50 transition">
+                <td class="py-3 px-4 font-mono font-bold text-slate-400">#${m.id}</td>
+                <td class="py-3 px-4"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${m.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-teal-50 text-[#0E7979]'}">${m.status}</span></td>
+                <td class="py-3 px-4 max-w-xs truncate font-medium text-slate-900" title="${escapeHtml(m.url)}">${escapeHtml(m.url)}</td>
+                <td class="py-3 px-4 max-w-xs truncate text-slate-600">${escapeHtml(m.goal)}</td>
+                <td class="py-3 px-4 text-slate-500">${m.interval_seconds / 60}m</td>
+                <td class="py-3 px-4 font-mono text-[11px] text-slate-600">${m.last_result ? JSON.stringify(m.last_result) : '-'}</td>
+                <td class="py-3 px-4 text-right space-x-1 shrink-0">
+                  <button onclick="runMonitorNow(${m.id})" class="p-1 text-[#0E7979]" title="Run Check Now"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>
+                  <button onclick="deleteMonitor(${m.id})" class="p-1 text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+        lucide.createIcons();
+      } catch (e) {
+        console.error("Monitors err:", e);
+      }
+    }
+
+    async function runMonitorNow(id) {
+      await fetch(`/monitors/${id}/run`, { method: 'POST' });
+      refreshMonitors();
+    }
+    async function deleteMonitor(id) {
+      if (confirm("Delete monitor?")) {
+        await fetch(`/monitors/${id}`, { method: 'DELETE' });
+        refreshMonitors();
+      }
     }
 
     function escapeHtml(str) {

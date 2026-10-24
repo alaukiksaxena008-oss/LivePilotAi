@@ -40,7 +40,7 @@ def test_goal_persistence_and_restart_recovery(monkeypatch):
             steps=[{"tool": "ask_user"}],
         )
         budget = Budget(10, 2)
-        db.save_goal("goal123", "u1", "Check passport", goal_result, budget)
+        db.save_goal("goal123", "riya", "Check passport", goal_result, budget)
 
         res = c.get("/goals/goal123")
         assert res.status_code == 200
