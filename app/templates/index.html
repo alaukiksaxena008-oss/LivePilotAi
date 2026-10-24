@@ -180,8 +180,8 @@
           <span id="active-monitors-badge" class="ml-auto text-[10px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full shrink-0">0</span>
         </button>
         <button onclick="switchTab('database')" id="nav-database" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-200/60 transition">
-          <i data-lucide="database" class="w-4 h-4 shrink-0 text-slate-400"></i>
-          <span class="whitespace-nowrap">DB & Tool Audit</span>
+          <i data-lucide="history" class="w-4 h-4 shrink-0 text-slate-400"></i>
+          <span class="whitespace-nowrap">Activity History</span>
         </button>
       </nav>
     </div>
@@ -496,71 +496,36 @@
         </div>
       </section>
 
-      <!-- ==================== VIEW: DATABASE & AUDIT LOG INSPECTOR ==================== -->
+      <!-- ==================== VIEW: ACTIVITY HISTORY ==================== -->
       <section id="view-database" class="hidden space-y-6">
         <div class="card p-6 rounded-2xl shadow-xs flex items-center justify-between">
           <div>
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i data-lucide="database" class="w-5 h-5 text-[#0E7979]"></i> Relational Database & Tool Execution Audit
+              <i data-lucide="history" class="w-5 h-5 text-[#0E7979]"></i> Activity & Action History
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Strict Primary Keys, Foreign Keys, and an immutable log of what went IN and OUT of every tool.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Timeline of what LifePilot AI executed and what time each action took place.</p>
           </div>
-          <button onclick="loadToolAudit()" class="text-xs font-semibold text-[#0E7979] flex items-center gap-1 bg-[#e6f5f5] px-3 py-1.5 rounded-xl">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Audit Log
+          <button onclick="loadToolAudit()" class="text-xs font-semibold text-[#0E7979] flex items-center gap-1.5 bg-[#e6f5f5] hover:bg-[#d6f0f0] px-3.5 py-2 rounded-xl transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh History
           </button>
         </div>
 
-        <!-- Tool Audit Table -->
+        <!-- Activity History Table -->
         <div class="card rounded-2xl shadow-xs overflow-hidden">
-          <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-100/50">
-            <span class="text-xs font-bold text-slate-800">Tool Execution Telemetry (What went IN $\to$ What came OUT)</span>
-            <span class="text-[11px] text-slate-500 font-mono">Table: tool_executions (PK: id)</span>
-          </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[10px]">
                 <tr>
-                  <th class="py-3 px-4">ID</th>
-                  <th class="py-3 px-4">Tool Name</th>
-                  <th class="py-3 px-4">Input Payload (What Went IN)</th>
-                  <th class="py-3 px-4">Output Payload (What Came OUT)</th>
-                  <th class="py-3 px-4">Duration</th>
-                  <th class="py-3 px-4">Status</th>
-                  <th class="py-3 px-4">Timestamp</th>
+                  <th class="py-3 px-5">Time</th>
+                  <th class="py-3 px-5">What Was Done</th>
+                  <th class="py-3 px-5">Target / URL</th>
+                  <th class="py-3 px-5">Status</th>
                 </tr>
               </thead>
-              <tbody id="tool-audit-tbody" class="divide-y divide-slate-200 text-slate-700 font-mono text-[11px]">
-                <tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">Loading tool executions audit log...</td></tr>
+              <tbody id="tool-audit-tbody" class="divide-y divide-slate-200 text-slate-700">
+                <tr><td colspan="4" class="py-8 text-center text-slate-400 font-sans">Loading activity history...</td></tr>
               </tbody>
             </table>
-          </div>
-        </div>
-
-        <!-- Database Schema Overview -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
-          <div class="card p-4 rounded-xl space-y-1">
-            <p class="font-bold text-slate-900 font-sans">users (PK: id)</p>
-            <p class="text-slate-500 text-[11px]">• id (TEXT PK)</p>
-            <p class="text-slate-500 text-[11px]">• email (UNIQUE)</p>
-            <p class="text-slate-500 text-[11px]">• full_name, role</p>
-          </div>
-          <div class="card p-4 rounded-xl space-y-1">
-            <p class="font-bold text-slate-900 font-sans">profiles (FK: user_id)</p>
-            <p class="text-slate-500 text-[11px]">• id (INT PK)</p>
-            <p class="text-slate-500 text-[11px]">• user_id (FK CASCADE)</p>
-            <p class="text-slate-500 text-[11px]">• dob, id_number, college</p>
-          </div>
-          <div class="card p-4 rounded-xl space-y-1">
-            <p class="font-bold text-slate-900 font-sans">tasks (FK: user_id)</p>
-            <p class="text-slate-500 text-[11px]">• id (INT PK)</p>
-            <p class="text-slate-500 text-[11px]">• priority, status</p>
-            <p class="text-slate-500 text-[11px]">• target_url, due_date</p>
-          </div>
-          <div class="card p-4 rounded-xl space-y-1">
-            <p class="font-bold text-slate-900 font-sans">snapshots (FK: monitor_id)</p>
-            <p class="text-slate-500 text-[11px]">• id (INT PK)</p>
-            <p class="text-slate-500 text-[11px]">• monitor_id (FK CASCADE)</p>
-            <p class="text-slate-500 text-[11px]">• result (TEXT JSON)</p>
           </div>
         </div>
       </section>
@@ -982,7 +947,7 @@
       const titles = {
         dashboard: "Personal Command Center",
         profile: "User Profile & Information",
-        database: "Relational DB & Tool Telemetry",
+        database: "Activity History",
         monitoring: "Background Watchers"
       };
       document.getElementById("page-title").textContent = titles[tabId] || "Command Center";
@@ -1331,29 +1296,70 @@
       }
     }
 
-    // Tool Telemetry / Database Audit Log
+    // Activity & Execution History Log
     async function loadToolAudit() {
       try {
         const res = await fetch(`/tools/audit`);
         const rows = await res.json();
         const tbody = document.getElementById("tool-audit-tbody");
-        if (rows.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No tool runs recorded yet.</td></tr>`;
+        if (!tbody) return;
+        if (!rows || rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400 font-sans">No activity recorded yet. Give the agent a task in the console to get started.</td></tr>`;
           return;
         }
-        tbody.innerHTML = rows.map(r => `
-          <tr class="hover:bg-slate-200/50 transition">
-            <td class="py-2.5 px-4 font-bold text-slate-400">#${r.id}</td>
-            <td class="py-2.5 px-4 font-bold text-[#0E7979]">${r.tool_name}</td>
-            <td class="py-2.5 px-4 max-w-xs truncate text-slate-600" title="${escapeHtml(r.input_payload)}">${escapeHtml(r.input_payload)}</td>
-            <td class="py-2.5 px-4 max-w-xs truncate text-slate-600" title="${escapeHtml(r.output_payload)}">${escapeHtml(r.output_payload)}</td>
-            <td class="py-2.5 px-4 text-slate-500">${Math.round(r.duration_ms)}ms</td>
-            <td class="py-2.5 px-4"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${r.status === 'SUCCESS' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${r.status}</span></td>
-            <td class="py-2.5 px-4 text-slate-400 text-[10px]">${new Date(r.created_at * 1000).toLocaleTimeString()}</td>
-          </tr>
-        `).join('');
+        tbody.innerHTML = rows.map(r => {
+          let whatWasDone = r.tool_name;
+          let target = "";
+
+          try {
+            const inp = typeof r.input_payload === 'string' ? JSON.parse(r.input_payload) : r.input_payload;
+            if (inp.goal) {
+              whatWasDone = inp.goal;
+            } else if (inp.query) {
+              whatWasDone = `Searched web for "${inp.query}"`;
+            } else if (inp.urls) {
+              whatWasDone = `Fetched public page content`;
+              target = Array.isArray(inp.urls) ? inp.urls[0] : inp.urls;
+            } else if (r.tool_name === 'get_user_profile') {
+              whatWasDone = `Retrieved saved user profile details for form filling`;
+            } else if (r.tool_name === 'create_monitor') {
+              whatWasDone = `Created background watcher: ${inp.goal || ''}`;
+              target = inp.url || '';
+            }
+
+            if (inp.url) target = inp.url;
+          } catch (_) {
+            whatWasDone = r.input_payload || r.tool_name;
+          }
+
+          const d = new Date(r.created_at * 1000);
+          const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const dateStr = d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+          const isSuccess = r.status === 'SUCCESS' || r.status === 'COMPLETED';
+
+          return `
+            <tr class="hover:bg-slate-200/50 transition">
+              <td class="py-3.5 px-5 whitespace-nowrap">
+                <p class="font-bold text-slate-900">${timeStr}</p>
+                <p class="text-[10px] text-slate-400">${dateStr}</p>
+              </td>
+              <td class="py-3.5 px-5">
+                <p class="font-semibold text-slate-900 leading-snug">${escapeHtml(whatWasDone)}</p>
+                <span class="inline-block mt-1 text-[10px] font-bold text-[#0E7979] bg-[#e6f5f5] px-2 py-0.5 rounded">${r.tool_name}</span>
+              </td>
+              <td class="py-3.5 px-5 max-w-xs truncate">
+                ${target ? `<a href="${escapeHtml(target)}" target="_blank" class="text-slate-600 hover:text-[#0E7979] hover:underline font-mono text-[11px] truncate block" title="${escapeHtml(target)}">${escapeHtml(target)}</a>` : `<span class="text-slate-400 text-xs">—</span>`}
+              </td>
+              <td class="py-3.5 px-5 whitespace-nowrap">
+                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${isSuccess ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                  ${isSuccess ? 'Completed' : 'Failed'}
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('');
       } catch (e) {
-        console.error("Audit load err:", e);
+        console.error("Activity history load err:", e);
       }
     }
 
