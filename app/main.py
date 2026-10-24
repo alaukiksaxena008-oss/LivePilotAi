@@ -1,9 +1,13 @@
 import asyncio
 import uuid
+from pathlib import Path
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+
+HTML_FILE = Path(__file__).parent / "templates" / "index.html"
 
 from app.agent.llm import make_llm
 from app.agent.loop import GoalResult, resume_goal, run_goal
@@ -61,6 +65,11 @@ class ReplyIn(BaseModel):
 
 def _payload(goal_id: str, r) -> dict:
     return {"goal_id": goal_id, "status": r.status, "answer": r.answer, "question": r.question, "steps": r.steps}
+
+
+@app.get("/", response_class=HTMLResponse)
+async def dashboard():
+    return HTMLResponse(HTML_FILE.read_text(encoding="utf-8"))
 
 
 @app.get("/health")

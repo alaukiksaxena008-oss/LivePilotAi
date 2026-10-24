@@ -9,6 +9,8 @@ def test_health_and_empty_lists(monkeypatch):
 
     with TestClient(app) as c:
         assert c.get("/health").json() == {"ok": True}
+        assert c.get("/").status_code == 200
+        assert "LifePilot" in c.get("/").text
         assert c.get("/monitors").json() == []
         assert c.get("/alerts").json() == []
         assert c.post("/monitors/99/run").status_code == 404

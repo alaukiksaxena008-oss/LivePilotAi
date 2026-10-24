@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifePilot AI - Your Personal Command Center</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+            },
+            bgGray: '#f4f5f8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #f4f5f8; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="w-64 bg-white border-r border-slate-100 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
+    <div>
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5 px-2 py-3 mb-6">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight text-slate-900">LifePilot</span>
+          <span class="ml-1 text-[11px] font-semibold bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-md">AI</span>
+        </div>
+      </div>
+
+      <!-- Navigation Section -->
+      <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Workspace</div>
+      <nav class="space-y-1">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-brand-50 text-brand-700">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          <span>Dashboard</span>
+        </button>
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+          <span>Calendar</span>
+        </button>
+        <button onclick="switchTab('dues')" id="nav-dues" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="wallet" class="w-4 h-4 text-slate-400"></i>
+          <span>Dues & Payments</span>
+        </button>
+        <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+          <i data-lucide="check-square" class="w-4 h-4 text-slate-400"></i>
+          <span>Tasks & Applications</span>
+        </button>
+        <button onclick="switchTab('monitoring')" id="nav-monitoring" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+          <div class="flex items-center gap-3">
+            <i data-lucide="activity" class="w-4 h-4 text-slate-400"></i>
+            <span>Activity & Monitoring</span>
+          </div>
+          <span id="active-monitors-badge" class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">0</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- User Profile & Settings -->
+    <div class="border-t border-slate-100 pt-4">
+      <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Personal</div>
+      <button class="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition mb-3">
+        <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+        <span>Settings</span>
+      </button>
+
+      <div class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-700 font-bold text-xs flex items-center justify-center">
+            AM
+          </div>
+          <div class="text-left">
+            <p class="text-xs font-bold text-slate-800 leading-none">Alex Morgan</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Personal Workspace</p>
+          </div>
+        </div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 flex flex-col min-w-0">
+    <!-- Topbar -->
+    <header class="bg-white/80 backdrop-blur border-b border-slate-100 px-8 py-3.5 flex items-center justify-between sticky top-0 z-10">
+      <h1 id="page-title" class="text-lg font-bold text-slate-800">Dashboard</h1>
+      
+      <div class="flex items-center gap-4">
+        <!-- Search bar -->
+        <div class="relative w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input type="text" placeholder="Search tasks, bills, events..." class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+        </div>
+
+        <!-- Notification Bell -->
+        <div class="relative">
+          <button onclick="openAlertsModal()" class="w-9 h-9 rounded-xl border border-slate-200/60 flex items-center justify-center text-slate-600 hover:bg-slate-50 relative transition">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span id="alerts-count-badge" class="w-2 h-2 rounded-full bg-rose-500 absolute top-2 right-2 hidden"></span>
+          </button>
+        </div>
+
+        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center">
+          AM
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <div class="p-8 max-w-7xl mx-auto w-full space-y-6">
+
+      <!-- ==================== VIEW: DASHBOARD ==================== -->
+      <section id="view-dashboard" class="space-y-6">
+        <!-- Welcome Hero -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <p class="text-[11px] font-bold text-brand-600 uppercase tracking-widest mb-1">Your Personal Command Center</p>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Good morning, Alex 👋</h2>
+            <p class="text-xs text-slate-500 mt-1">Here's what deserves your attention today. <span class="font-medium text-slate-700" id="current-date-text"></span></p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button onclick="openGoalModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm shadow-brand-600/30 transition">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              <span>+ Ask LifePilot</span>
+            </button>
+            <button onclick="openNewMonitorModal()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>+ Quick Add</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1 -->
+          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 shrink-0">
+              <i data-lucide="list-todo" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-2xl font-extrabold text-slate-900 leading-none">04</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Tasks Today</p>
+              <p class="text-[11px] text-slate-400">2 completed, 2 remaining</p>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center text-brand-600 shrink-0">
+              <i data-lucide="calendar-clock" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-2xl font-extrabold text-slate-900 leading-none">03</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Upcoming Deadlines</p>
+              <p class="text-[11px] text-slate-400">Next 7 days</p>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-2xl font-extrabold text-slate-900 leading-none">02</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Pending Payments</p>
+              <p class="text-[11px] text-rose-500 font-medium">One due today</p>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="bg-white p-4.5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+              <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p id="stat-completed-count" class="text-2xl font-extrabold text-slate-900 leading-none">12</p>
+              <p class="text-xs font-semibold text-slate-700 mt-1">Completed This Week</p>
+              <p class="text-[11px] text-slate-400">Tasks finished</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Priorities & Week Schedule (2 Columns) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Today's Priorities (5 cols) -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Today's Priorities</h3>
+                  <p class="text-[11px] text-slate-400">Focus on what matters most</p>
+                </div>
+                <button onclick="switchTab('tasks')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">View All</button>
+              </div>
+
+              <!-- Priorities List -->
+              <div class="space-y-3">
+                <!-- Item 1 -->
+                <div class="p-3.5 rounded-xl border-l-4 border-l-rose-500 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
+                  <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <div>
+                      <p class="text-xs font-bold text-slate-800">Pay Electricity Bill</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[10px] text-slate-500">Today, 6:00 PM</span>
+                        <span class="text-[9px] font-bold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded">URGENT</span>
+                        <span class="text-[10px] text-slate-400">Pending</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="p-3.5 rounded-xl border-l-4 border-l-amber-500 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
+                  <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <div>
+                      <p class="text-xs font-bold text-slate-800">Track IndiGo Flight Refund (₹8,420)</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[10px] text-slate-500">Active Monitor</span>
+                        <span class="text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">AUTO-WATCH</span>
+                        <span class="text-[10px] text-emerald-600 font-medium">Checking</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="p-3.5 rounded-xl border-l-4 border-l-emerald-500 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
+                  <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <div>
+                      <p class="text-xs font-bold text-slate-800">Passport Application Status</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[10px] text-slate-500">Application IND-849204</span>
+                        <span class="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">VERIFIED</span>
+                        <span class="text-[10px] text-slate-400">Speed Post</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="p-3.5 rounded-xl border-l-4 border-l-slate-300 bg-slate-50/60 hover:bg-slate-50 transition flex items-start justify-between gap-3">
+                  <div class="flex items-start gap-3">
+                    <input type="checkbox" class="mt-0.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <div>
+                      <p class="text-xs font-bold text-slate-800">Submit Scholarship Application</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[10px] text-slate-500">Tomorrow, 11:59 PM</span>
+                        <span class="text-[9px] font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">HIGH</span>
+                        <span class="text-[10px] text-slate-400">In progress</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="text-slate-400 hover:text-slate-600 text-xs">•••</button>
+                </div>
+              </div>
+            </div>
+
+            <button onclick="openGoalModal()" class="mt-4 w-full py-2 border border-dashed border-slate-200 hover:border-brand-500 hover:text-brand-600 text-slate-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Assign new task to LifePilot</span>
+            </button>
+          </div>
+
+          <!-- This Week Calendar (7 cols) -->
+          <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">This Week</h3>
+                  <p class="text-[11px] text-slate-400" id="week-range-text">Oct 19 – Oct 25, 2026</p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg font-medium">Current week</span>
+                  <button class="p-1 rounded-lg hover:bg-slate-100 text-slate-400"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                  <button class="p-1 rounded-lg hover:bg-slate-100 text-slate-400"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                  <button class="text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded-lg">Today</button>
+                </div>
+              </div>
+
+              <!-- 7 Day Week Grid -->
+              <div class="grid grid-cols-7 gap-2 text-center text-xs">
+                <!-- MON -->
+                <div class="p-2 rounded-xl bg-slate-50/70">
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Mon</span>
+                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">19</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Planning</div>
+                  </div>
+                </div>
+                <!-- TUE -->
+                <div class="p-2 rounded-xl bg-slate-50/70">
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Tue</span>
+                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">20</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Refund check</div>
+                  </div>
+                </div>
+                <!-- WED -->
+                <div class="p-2 rounded-xl bg-slate-50/70">
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Wed</span>
+                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">21</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-amber-50 text-amber-700 rounded text-[9px] truncate">Insurance</div>
+                  </div>
+                </div>
+                <!-- THU -->
+                <div class="p-2 rounded-xl bg-slate-50/70">
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Thu</span>
+                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">22</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Docs</div>
+                  </div>
+                </div>
+                <!-- FRI -->
+                <div class="p-2 rounded-xl bg-slate-50/70">
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Fri</span>
+                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">23</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-rose-50 text-rose-700 rounded text-[9px] truncate font-medium">Electricity</div>
+                  </div>
+                </div>
+                <!-- SAT (Today) -->
+                <div class="p-2 rounded-xl bg-brand-50 border border-brand-200 ring-2 ring-brand-500/10">
+                  <span class="text-[10px] font-extrabold text-brand-700 block uppercase">Sat</span>
+                  <span class="font-extrabold text-brand-700 text-xs mt-0.5 block">24</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-brand-600 text-white rounded text-[9px] truncate font-medium">Passport OTP</div>
+                    <div class="p-1 bg-emerald-100 text-emerald-800 rounded text-[9px] truncate">Refund Alert</div>
+                  </div>
+                </div>
+                <!-- SUN -->
+                <div class="p-2 rounded-xl bg-slate-50/70">
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Sun</span>
+                  <span class="font-bold text-slate-700 text-xs mt-0.5 block">25</span>
+                  <div class="mt-2 space-y-1">
+                    <div class="p-1 bg-white rounded text-[9px] border border-slate-100 text-slate-600 truncate">Review</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-4">
+              <span class="text-[11px] text-slate-500 font-medium">Syncing live with LifePilot monitors</span>
+              <button onclick="switchTab('calendar')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">View Calendar →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payments & Dues + Active Monitors Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Payments & Dues (5 cols) -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Payments & Dues</h3>
+                <p class="text-[11px] text-slate-400">A quick look at what's coming up</p>
+              </div>
+              <button onclick="switchTab('dues')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">View All</button>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs">
+                    ⚡
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-slate-800">Electricity Bill</p>
+                    <span class="text-[9px] font-extrabold text-rose-600 bg-rose-50 px-1 py-0.5 rounded">DUE TODAY</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs font-extrabold text-slate-900">₹1,850</p>
+                  <p class="text-[10px] text-brand-600 font-medium hover:underline cursor-pointer">View Details</p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
+                    🎬
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-slate-800">Streaming Subscription</p>
+                    <span class="text-[10px] text-slate-400">In 3 days</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs font-extrabold text-slate-900">₹499</p>
+                  <p class="text-[10px] text-slate-400">Auto-debit</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Background Monitors (7 cols) -->
+          <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <h3 class="text-sm font-bold text-slate-900">Live Background Monitors</h3>
+                </div>
+                <button onclick="refreshMonitors()" class="text-xs font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1">
+                  <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh
+                </button>
+              </div>
+
+              <!-- Dynamic Monitors Container -->
+              <div id="dashboard-monitors-list" class="space-y-2.5">
+                <div class="text-xs text-slate-400 text-center py-6">Loading active monitors from database...</div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 mt-4 flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">Checked via TinyFish cloud browser engine</span>
+              <button onclick="switchTab('monitoring')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">Manage Monitors →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: ACTIVITY & MONITORING ==================== -->
+      <section id="view-monitoring" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Activity & Monitoring</h2>
+            <p class="text-xs text-slate-500">Autonomous web monitors running in the background for your life admin</p>
+          </div>
+          <button onclick="openNewMonitorModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm transition">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add New Monitor
+          </button>
+        </div>
+
+        <!-- Full Monitors Table -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">All Scheduled Monitors</span>
+            <button onclick="refreshMonitors()" class="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1">
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync DB
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50/70 text-slate-400 font-bold uppercase text-[10px]">
+                <tr>
+                  <th class="py-3 px-4">ID</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4">Target Portal</th>
+                  <th class="py-3 px-4">Goal / Extraction</th>
+                  <th class="py-3 px-4">Interval</th>
+                  <th class="py-3 px-4">Last Result</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="full-monitors-tbody" class="divide-y divide-slate-100 text-slate-700">
+                <tr><td colspan="7" class="py-8 text-center text-slate-400">Loading monitors...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live Alerts Feed -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+            <i data-lucide="bell" class="w-4 h-4 text-brand-600"></i> Alert Log & Notifications
+          </h3>
+          <div id="full-alerts-list" class="space-y-3">
+            <p class="text-xs text-slate-400">Loading alerts history...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Placeholder Views for Calendar / Dues / Tasks -->
+      <section id="view-calendar" class="hidden space-y-6">
+        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center">
+          <i data-lucide="calendar" class="w-10 h-10 text-brand-500 mx-auto mb-3"></i>
+          <h3 class="text-base font-bold text-slate-800">LifePilot Calendar Sync</h3>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Automatically aggregates upcoming deadlines from monitored university portals, bill due dates, and flight schedules.</p>
+        </div>
+      </section>
+
+      <section id="view-dues" class="hidden space-y-6">
+        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center">
+          <i data-lucide="wallet" class="w-10 h-10 text-emerald-500 mx-auto mb-3"></i>
+          <h3 class="text-base font-bold text-slate-800">Dues & Refunds Center</h3>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Monitors utility portals and follows refunds from airline cancelation directly to your bank credit.</p>
+        </div>
+      </section>
+
+      <section id="view-tasks" class="hidden space-y-6">
+        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center">
+          <i data-lucide="check-square" class="w-10 h-10 text-purple-500 mx-auto mb-3"></i>
+          <h3 class="text-base font-bold text-slate-800">Tasks & Applications</h3>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1">Passport tracking, exam applications, and job portal notices kept on continuous watch.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== FLOATING ACTION BUTTON (AI ASSISTANT) ==================== -->
+  <button onclick="openGoalModal()" class="fixed bottom-8 right-8 w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white shadow-xl shadow-brand-600/40 hover:scale-105 active:scale-95 flex items-center justify-center transition z-40 group" title="Chat with LifePilot AI">
+    <i data-lucide="sparkles" class="w-6 h-6 animate-pulse"></i>
+    <span class="absolute right-16 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap shadow-md pointer-events-none">
+      Ask LifePilot AI
+    </span>
+  </button>
+
+  <!-- ==================== AI AGENT CHAT DRAWER ==================== -->
+  <div id="ai-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl border-l border-slate-100 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <!-- Drawer Header -->
+    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-sm">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold text-slate-900">LifePilot Agent</h3>
+          <p class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online & Autonomous
+          </p>
+        </div>
+      </div>
+      <button onclick="closeGoalModal()" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Chat Messages & Steps Scroll Area -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar text-xs">
+      <div class="flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs shrink-0">
+          AI
+        </div>
+        <div class="bg-slate-100 rounded-2xl rounded-tl-sm p-3 text-slate-700 leading-relaxed max-w-[85%]">
+          Hello Alex! State any web goal in plain English (e.g. <i>"Check my refund on [URL]"</i> or <i>"Watch passport application on [URL]"</i>). I will plan, browse, and notify you!
+        </div>
+      </div>
+    </div>
+
+    <!-- OTP / Paused Prompt Card (Hidden by default) -->
+    <div id="otp-container" class="hidden p-4 bg-amber-50 border-t border-amber-200">
+      <div class="flex items-start gap-2.5 mb-2.5">
+        <i data-lucide="key-round" class="w-4 h-4 text-amber-600 mt-0.5 shrink-0"></i>
+        <div>
+          <p class="text-xs font-bold text-amber-900" id="otp-question-text">Agent needs your input</p>
+          <p class="text-[11px] text-amber-700">Enter the requested OTP or answer to resume execution:</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <input type="text" id="otp-input" placeholder="e.g. 482910" class="flex-1 bg-white border border-amber-300 rounded-xl px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500">
+        <button onclick="submitOtpReply()" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition">
+          Submit
+        </button>
+      </div>
+    </div>
+
+    <!-- Input Footer -->
+    <div class="p-4 border-t border-slate-100 bg-white">
+      <form onsubmit="handleAgentSubmit(event)" class="flex gap-2">
+        <input type="text" id="agent-input" placeholder="Say: Check refund on http://..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+        <button type="submit" id="agent-send-btn" class="w-9 h-9 rounded-xl bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-md shadow-brand-600/20 transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </form>
+      <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 px-1">
+        <span>Cheapest tool first • Read-only safe</span>
+        <span>Groq LLM + TinyFish</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== QUICK MONITOR MODAL ==================== -->
+  <div id="new-monitor-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900">Add Background Monitor</h3>
+        <button onclick="closeNewMonitorModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form onsubmit="handleCreateMonitor(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Target Portal URL</label>
+          <input type="url" id="m-url" required placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">What to watch (Goal)</label>
+          <input type="text" id="m-goal" required placeholder="read the refund status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Fields to extract</label>
+            <input type="text" id="m-fields" required placeholder="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Interval (minutes)</label>
+            <input type="number" id="m-interval" value="1" min="0.5" step="0.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeNewMonitorModal()" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold">Create Monitor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== ALERTS FEED MODAL ==================== -->
+  <div id="alerts-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="bell" class="w-4 h-4 text-brand-600"></i> Notifications & Alerts
+        </h3>
+        <button onclick="closeAlertsModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div id="modal-alerts-content" class="max-h-96 overflow-y-auto space-y-2.5 custom-scrollbar text-xs">
+        <p class="text-slate-400 text-center py-4">Loading alerts...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    let activeGoalId = null;
+
+    // Initialize UI on load
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      document.getElementById("current-date-text").textContent = new Date().toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+      refreshMonitors();
+      refreshAlerts();
+      // Poll alerts & monitors every 15s
+      setInterval(() => { refreshMonitors(); refreshAlerts(); }, 15000);
+    });
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      const views = ['dashboard', 'monitoring', 'calendar', 'dues', 'tasks'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        const nav = document.getElementById(`nav-${v}`);
+        if (el) el.classList.toggle('hidden', v !== tabId);
+        if (nav) {
+          if (v === tabId) {
+            nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-brand-50 text-brand-700";
+          } else {
+            nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition";
+          }
+        }
+      });
+      const titles = {
+        dashboard: "Dashboard",
+        monitoring: "Activity & Monitoring",
+        calendar: "Calendar",
+        dues: "Dues & Payments",
+        tasks: "Tasks & Applications"
+      };
+      document.getElementById("page-title").textContent = titles[tabId] || "Dashboard";
+      lucide.createIcons();
+    }
+
+    // Modal & Drawer toggles
+    function openGoalModal() {
+      document.getElementById("ai-drawer").classList.remove("translate-x-full");
+      document.getElementById("agent-input").focus();
+    }
+    function closeGoalModal() {
+      document.getElementById("ai-drawer").classList.add("translate-x-full");
+    }
+    function openNewMonitorModal() {
+      document.getElementById("new-monitor-modal").classList.remove("hidden");
+    }
+    function closeNewMonitorModal() {
+      document.getElementById("new-monitor-modal").classList.add("hidden");
+    }
+    function openAlertsModal() {
+      document.getElementById("alerts-modal").classList.remove("hidden");
+      refreshAlerts();
+    }
+    function closeAlertsModal() {
+      document.getElementById("alerts-modal").classList.add("hidden");
+    }
+
+    // Refresh Monitors
+    async function refreshMonitors() {
+      try {
+        const res = await fetch('/monitors');
+        const monitors = await res.json();
+        
+        // Update badge
+        document.getElementById("active-monitors-badge").textContent = monitors.filter(m => m.status === 'active').length;
+
+        // Render in Dashboard card
+        const dashList = document.getElementById("dashboard-monitors-list");
+        if (monitors.length === 0) {
+          dashList.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">No active monitors yet. Click "+ Ask LifePilot" to create one!</div>`;
+        } else {
+          dashList.innerHTML = monitors.slice(0, 4).map(m => `
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100/70 transition">
+              <div class="min-w-0 pr-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500' : 'bg-slate-300'}"></span>
+                  <p class="text-xs font-bold text-slate-800 truncate">${escapeHtml(m.url)}</p>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5 truncate">${escapeHtml(m.goal)}</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                  m.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                  m.status === 'active' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
+                }">${m.status.toUpperCase()}</span>
+                <button onclick="runMonitorNow(${m.id})" class="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-brand-600" title="Run Check Now">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Render in Full Table
+        const tbody = document.getElementById("full-monitors-tbody");
+        if (monitors.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No monitors created yet.</td></tr>`;
+        } else {
+          tbody.innerHTML = monitors.map(m => `
+            <tr class="hover:bg-slate-50/60 transition">
+              <td class="py-3 px-4 font-mono text-[11px] font-bold text-slate-400">#${m.id}</td>
+              <td class="py-3 px-4">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${
+                  m.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                  m.status === 'active' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
+                }">${m.status}</span>
+              </td>
+              <td class="py-3 px-4 max-w-xs truncate font-medium text-slate-800" title="${escapeHtml(m.url)}">${escapeHtml(m.url)}</td>
+              <td class="py-3 px-4 max-w-xs truncate text-slate-600">${escapeHtml(m.goal)}</td>
+              <td class="py-3 px-4 text-slate-500">${m.interval_seconds / 60}m</td>
+              <td class="py-3 px-4 font-mono text-[11px] text-slate-600">${m.last_result ? JSON.stringify(m.last_result) : '-'}</td>
+              <td class="py-3 px-4 text-right space-x-1 shrink-0">
+                <button onclick="runMonitorNow(${m.id})" class="p-1 hover:bg-slate-200 rounded text-brand-600" title="Run Now"><i data-lucide="play" class="w-3.5 h-3.5"></i></button>
+                <button onclick="togglePauseMonitor(${m.id}, '${m.status}')" class="p-1 hover:bg-slate-200 rounded text-amber-600" title="Pause/Resume">
+                  <i data-lucide="${m.status === 'active' ? 'pause' : 'play-circle'}" class="w-3.5 h-3.5"></i>
+                </button>
+                <button onclick="deleteMonitor(${m.id})" class="p-1 hover:bg-slate-200 rounded text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              </td>
+            </tr>
+          `).join('');
+        }
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Failed to load monitors:", err);
+      }
+    }
+
+    // Refresh Alerts
+    async function refreshAlerts() {
+      try {
+        const res = await fetch('/alerts');
+        const alerts = await res.json();
+        
+        const badge = document.getElementById("alerts-count-badge");
+        if (alerts.length > 0) badge.classList.remove("hidden");
+        else badge.classList.add("hidden");
+
+        const list = document.getElementById("full-alerts-list");
+        const modalContent = document.getElementById("modal-alerts-content");
+        
+        const html = alerts.length === 0 ? `<p class="text-xs text-slate-400 py-3">No alerts yet.</p>` : alerts.map(a => `
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3 text-xs">
+            <span class="text-base shrink-0">🔔</span>
+            <div class="flex-1">
+              <p class="font-medium text-slate-800 whitespace-pre-line leading-relaxed">${escapeHtml(a.message)}</p>
+              <p class="text-[10px] text-slate-400 mt-1">${new Date(a.created_at * 1000).toLocaleString()}</p>
+            </div>
+          </div>
+        `).join('');
+
+        if (list) list.innerHTML = html;
+        if (modalContent) modalContent.innerHTML = html;
+      } catch (err) {
+        console.error("Failed to load alerts:", err);
+      }
+    }
+
+    // Run Monitor Now
+    async function runMonitorNow(id) {
+      try {
+        const res = await fetch(`/monitors/${id}/run`, { method: 'POST' });
+        const data = await res.json();
+        refreshMonitors();
+        refreshAlerts();
+      } catch (e) {
+        alert("Error running check: " + e);
+      }
+    }
+
+    // Pause / Resume
+    async function togglePauseMonitor(id, status) {
+      const action = status === 'active' ? 'pause' : 'resume';
+      await fetch(`/monitors/${id}/${action}`, { method: 'POST' });
+      refreshMonitors();
+    }
+
+    // Delete Monitor
+    async function deleteMonitor(id) {
+      if (confirm(`Are you sure you want to delete monitor #${id}?`)) {
+        await fetch(`/monitors/${id}`, { method: 'DELETE' });
+        refreshMonitors();
+      }
+    }
+
+    // Create Monitor Manual
+    async function handleCreateMonitor(e) {
+      e.preventDefault();
+      const url = document.getElementById('m-url').value;
+      const goal = document.getElementById('m-goal').value;
+      const fields = document.getElementById('m-fields').value.split(',').map(s => s.trim());
+      const interval = parseFloat(document.getElementById('m-interval').value) * 60;
+
+      // Ask agent to create monitor
+      closeNewMonitorModal();
+      openGoalModal();
+      document.getElementById('agent-input').value = `Set up a background monitor on ${url} to ${goal} every ${interval/60} minutes`;
+      handleAgentSubmit(new Event('submit'));
+    }
+
+    // Chat / AI Goal Submission
+    async function handleAgentSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById("agent-input");
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+
+      appendChatMessage("user", text);
+      const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping"></span> Thinking & executing tools...</span>`);
+
+      try {
+        const res = await fetch("/goals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, user_id: "alex" })
+        });
+        const data = await res.json();
+        activeGoalId = data.goal_id;
+
+        loadingEl.remove();
+        renderGoalResult(data);
+        refreshMonitors();
+        refreshAlerts();
+      } catch (err) {
+        loadingEl.innerHTML = `<span class="text-rose-600">Error: ${err.message}</span>`;
+      }
+    }
+
+    // Render Steps & Status
+    function renderGoalResult(data) {
+      let html = `<div class="space-y-2">`;
+
+      // Render tool steps if any
+      if (data.steps && data.steps.length > 0) {
+        html += `<div class="space-y-1.5 border-b border-slate-200/60 pb-2 mb-2">`;
+        data.steps.forEach((st, i) => {
+          html += `
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-600 bg-white p-1.5 rounded-lg border border-slate-100 shadow-2xs">
+              <span class="font-bold text-brand-600">⚡ Step ${i+1}:</span>
+              <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-[10px]">${st.tool}</span>
+              <span class="truncate text-slate-500">${st.paused ? 'Paused for user' : (st.output_preview || 'Completed')}</span>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      // Check status
+      if (data.status === "waiting_for_user") {
+        html += `<p class="font-semibold text-amber-900">${escapeHtml(data.question || 'Please provide information:')}</p>`;
+        document.getElementById("otp-question-text").textContent = data.question || "Input required";
+        document.getElementById("otp-container").classList.remove("hidden");
+        document.getElementById("otp-input").focus();
+      } else if (data.status === "done") {
+        html += `<p class="leading-relaxed text-slate-800">${escapeHtml(data.answer)}</p>`;
+        document.getElementById("otp-container").classList.add("hidden");
+      } else {
+        html += `<p class="text-slate-600">${escapeHtml(data.answer || data.status)}</p>`;
+        document.getElementById("otp-container").classList.add("hidden");
+      }
+
+      html += `</div>`;
+      appendChatMessage("ai", html);
+    }
+
+    // Submit OTP / Reply to Paused Goal
+    async function submitOtpReply() {
+      const input = document.getElementById("otp-input");
+      const text = input.value.trim();
+      if (!text || !activeGoalId) return;
+      input.value = "";
+
+      document.getElementById("otp-container").classList.add("hidden");
+      appendChatMessage("user", text);
+      const loadingEl = appendChatMessage("ai", `<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping"></span> Resuming agent with your reply...</span>`);
+
+      try {
+        const res = await fetch(`/goals/${activeGoalId}/reply`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        loadingEl.remove();
+        renderGoalResult(data);
+        refreshMonitors();
+        refreshAlerts();
+      } catch (err) {
+        loadingEl.innerHTML = `<span class="text-rose-600">Error: ${err.message}</span>`;
+      }
+    }
+
+    function appendChatMessage(sender, content) {
+      const container = document.getElementById("chat-messages");
+      const div = document.createElement("div");
+      div.className = `flex items-start gap-2.5 ${sender === 'user' ? 'justify-end' : ''}`;
+      
+      if (sender === 'user') {
+        div.innerHTML = `
+          <div class="bg-brand-600 text-white rounded-2xl rounded-tr-sm p-3 leading-relaxed max-w-[85%] text-xs shadow-sm">
+            ${content}
+          </div>
+          <div class="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-xs shrink-0">
+            AM
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs shrink-0">
+            AI
+          </div>
+          <div class="bg-slate-100 rounded-2xl rounded-tl-sm p-3 text-slate-700 leading-relaxed max-w-[85%] text-xs">
+            ${content}
+          </div>
+        `;
+      }
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div.querySelector(sender === 'user' ? '.bg-brand-600' : '.bg-slate-100');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+  </script>
+</body>
+</html>
