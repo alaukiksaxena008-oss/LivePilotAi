@@ -12,4 +12,7 @@ def test_health_and_empty_lists(monkeypatch):
         assert c.get("/monitors").json() == []
         assert c.get("/alerts").json() == []
         assert c.post("/monitors/99/run").status_code == 404
+        assert c.post("/monitors/99/pause").status_code == 404
+        assert c.post("/monitors/99/resume").status_code == 404
+        assert c.delete("/monitors/99").status_code == 404
         assert c.post("/goals/nope/reply", json={"text": "x"}).status_code == 404

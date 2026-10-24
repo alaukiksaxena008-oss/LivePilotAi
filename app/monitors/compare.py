@@ -19,6 +19,24 @@ def diff(old: dict | None, new: dict) -> list[dict]:
     return changes
 
 
+TERMINAL_STATUSES = {
+    "credited", "refunded", "completed", "approved", "dispatched",
+    "delivered", "rejected", "cancelled", "canceled", "failed", "closed", "paid",
+}
+
+
+def is_terminal_status(result: dict | None) -> bool:
+    """Returns True if any field in result indicates a terminal/final life admin state."""
+    if not isinstance(result, dict):
+        return False
+    for v in result.values():
+        if isinstance(v, str):
+            words = set(v.casefold().replace(".", " ").replace(",", " ").replace("-", " ").split())
+            if words & TERMINAL_STATUSES:
+                return True
+    return False
+
+
 def describe(monitor: dict, changes: list[dict]) -> str:
     lines = [f"{c['field']}: {c['old']} → {c['new']}" for c in changes]
     return f"Change detected on {monitor['url']}\n" + "\n".join(lines)

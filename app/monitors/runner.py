@@ -5,7 +5,7 @@ from typing import Any, Awaitable, Callable
 
 from app.agent.tools import READ_ONLY_PREFIX
 from app.db import DB
-from app.monitors.compare import describe, diff
+from app.monitors.compare import describe, diff, is_terminal_status
 from app.tinyfish.client import TinyFishClient, TinyFishError
 
 Notify = Callable[[str, str], Awaitable[None]]
@@ -50,7 +50,14 @@ async def run_monitor(
 
     db.save_snapshot(monitor_id, result)
     message = await explain(m, changes) if explain else describe(m, changes)
+
+    # Auto-complete: if the new status indicates the task has completed (e.g. Credited, Dispatched)
+    auto_completed = is_terminal_status(result)
+    if auto_completed:
+        db.set_status(monitor_id, "completed")
+        message += "\n\n🎉 Goal reached! This monitor has been automatically completed and stopped."
+
     db.add_alert(monitor_id, m["user_id"], message)
     await notify(m["user_id"], message)
     db.mark_checked(monitor_id, now, result=result)
-    return {"outcome": "changed", "changes": changes, "message": message}
+    return {"outcome": "changed", "changes": changes, "message": message, "completed": auto_completed}

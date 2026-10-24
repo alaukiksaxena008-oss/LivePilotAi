@@ -80,6 +80,30 @@ async def list_monitors(user_id: str | None = None):
     return app.state.db.list_monitors(user_id)
 
 
+@app.post("/monitors/{monitor_id}/pause")
+async def pause_monitor(monitor_id: int):
+    if not app.state.db.get_monitor(monitor_id):
+        raise HTTPException(404, "No such monitor")
+    app.state.db.set_status(monitor_id, "paused")
+    return {"monitor_id": monitor_id, "status": "paused"}
+
+
+@app.post("/monitors/{monitor_id}/resume")
+async def resume_monitor(monitor_id: int):
+    if not app.state.db.get_monitor(monitor_id):
+        raise HTTPException(404, "No such monitor")
+    app.state.db.set_status(monitor_id, "active")
+    return {"monitor_id": monitor_id, "status": "active"}
+
+
+@app.delete("/monitors/{monitor_id}")
+async def delete_monitor(monitor_id: int):
+    if not app.state.db.get_monitor(monitor_id):
+        raise HTTPException(404, "No such monitor")
+    app.state.db.delete_monitor(monitor_id)
+    return {"deleted": monitor_id}
+
+
 @app.post("/monitors/{monitor_id}/run")
 async def run_monitor_now(monitor_id: int):
     """Trigger a check immediately: handy for the live demo."""

@@ -42,6 +42,14 @@ class TinyFishClient:
 
     # ---------- helpers ----------
     @staticmethod
+    def _clean_schema(schema: Any) -> Any:
+        if isinstance(schema, dict):
+            return {k: TinyFishClient._clean_schema(v) for k, v in schema.items() if k != "description"}
+        if isinstance(schema, list):
+            return [TinyFishClient._clean_schema(x) for x in schema]
+        return schema
+
+    @staticmethod
     def build_body(
         url: str,
         goal: str,
@@ -58,7 +66,7 @@ class TinyFishClient:
     ) -> dict[str, Any]:
         body: dict[str, Any] = {"url": url, "goal": goal}
         if output_schema:
-            body["output_schema"] = output_schema
+            body["output_schema"] = TinyFishClient._clean_schema(output_schema)
         if use_vault:
             body["use_vault"] = True
             if credential_item_ids:

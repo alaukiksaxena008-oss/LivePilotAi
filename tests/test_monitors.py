@@ -36,6 +36,8 @@ def test_baseline_then_unchanged_then_changed_alerts_once():
 
     outs = asyncio.run(go())
     assert [o["outcome"] for o in outs] == ["baseline", "unchanged", "changed"]
+    assert outs[2]["completed"] is True
+    assert db.get_monitor(mid)["status"] == "completed"
     assert len(sent) == 1 and "Initiated → Credited" in sent[0][1]
     assert db.list_alerts("u1")[0]["message"] == sent[0][1]
     assert db.get_monitor(mid)["last_result"] == {"status": "Credited"}

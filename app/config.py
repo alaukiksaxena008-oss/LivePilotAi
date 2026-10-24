@@ -11,6 +11,7 @@ class Settings:
     tinyfish_api_key: str
     anthropic_api_key: str
     hf_token: str
+    groq_api_key: str
     llm_provider: str
     llm_model: str
     agent_model: str
@@ -26,6 +27,7 @@ def get_settings() -> Settings:
         tinyfish_api_key=os.getenv("TINYFISH_API_KEY", ""),
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY", ""),
         hf_token=os.getenv("HF_TOKEN", ""),
+        groq_api_key=os.getenv("GROQ_API_KEY", ""),
         llm_provider=os.getenv("LLM_PROVIDER", "huggingface"),
         llm_model=os.getenv("LLM_MODEL", "openai/gpt-oss-120b"),
         agent_model=os.getenv("AGENT_MODEL", "claude-sonnet-5-5"),

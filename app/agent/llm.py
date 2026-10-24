@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from typing import Any
 
 HF_BASE_URL = "https://router.huggingface.co/v1"
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
 
 def to_openai_messages(system: str, messages: list[dict]) -> list[dict]:
@@ -75,6 +76,10 @@ def make_llm(settings) -> tuple[Any, str]:
     if settings.llm_provider == "anthropic":
         from anthropic import AsyncAnthropic
         return AsyncAnthropic(api_key=settings.anthropic_api_key).messages, settings.agent_model
+    if settings.llm_provider == "groq":
+        from openai import AsyncOpenAI
+        client = AsyncOpenAI(base_url=GROQ_BASE_URL, api_key=settings.groq_api_key)
+        return OpenAICompatLLM(client), settings.llm_model
     from openai import AsyncOpenAI
     client = AsyncOpenAI(base_url=HF_BASE_URL, api_key=settings.hf_token)
     return OpenAICompatLLM(client), settings.llm_model

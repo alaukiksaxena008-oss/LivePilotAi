@@ -1,8 +1,17 @@
-from app.monitors.compare import describe, diff
+from app.monitors.compare import describe, diff, is_terminal_status
 
 
 def test_first_run_has_no_changes():
     assert diff(None, {"status": "Initiated"}) == []
+
+
+def test_terminal_status_detection():
+    assert is_terminal_status({"status": "Credited"}) is True
+    assert is_terminal_status({"status": "Dispatched via Speed Post"}) is True
+    assert is_terminal_status({"status": "Refund Completed"}) is True
+    assert is_terminal_status({"status": "Initiated"}) is False
+    assert is_terminal_status({"status": "Under Review"}) is False
+    assert is_terminal_status(None) is False
 
 
 def test_detects_changed_field():

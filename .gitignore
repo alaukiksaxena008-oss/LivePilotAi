@@ -1,0 +1,29 @@
+# Environment variables (NEVER commit secrets or API keys)
+.env
+*.env
+!.env.example
+
+# Database
+*.db
+*.sqlite3
+autopilot.db
+
+# Virtual environments
+myvenv/
+myvenv2/
+.venv/
+venv/
+env/
+
+# Python cache & tests
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS / Editor files
+.DS_Store
+.idea/
+.vscode/

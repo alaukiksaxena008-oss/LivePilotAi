@@ -91,6 +91,11 @@ class DB:
     def set_status(self, monitor_id: int, status: str) -> None:
         self._run("UPDATE monitors SET status=? WHERE id=?", (status, monitor_id))
 
+    def delete_monitor(self, monitor_id: int) -> None:
+        self._run("DELETE FROM snapshots WHERE monitor_id=?", (monitor_id,))
+        self._run("DELETE FROM alerts WHERE monitor_id=?", (monitor_id,))
+        self._run("DELETE FROM monitors WHERE id=?", (monitor_id,))
+
     # snapshots
     def last_snapshot(self, monitor_id: int) -> dict | None:
         row = self._run("SELECT result FROM snapshots WHERE monitor_id=? ORDER BY id DESC LIMIT 1", (monitor_id,)).fetchone()
