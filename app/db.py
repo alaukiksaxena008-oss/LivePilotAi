@@ -323,6 +323,12 @@ class DB:
     def update_task_status(self, task_id: int, status: str) -> None:
         self._run("UPDATE tasks SET status=?, updated_at=? WHERE id=?", (status.upper(), time.time(), task_id))
 
+    def update_task(self, task_id: int, title: str, target_url: str, priority: str, due_date: str) -> None:
+        self._run(
+            "UPDATE tasks SET title=?, target_url=?, priority=?, due_date=?, updated_at=? WHERE id=?",
+            (title, target_url, priority.upper(), due_date, time.time(), task_id),
+        )
+
     def delete_task(self, task_id: int) -> None:
         self._run("DELETE FROM tasks WHERE id=?", (task_id,))
 
@@ -331,12 +337,28 @@ class DB:
         rows = self._run("SELECT id, user_id, service_name, portal_url, username, '••••••••' as password_masked, notes, created_at FROM credentials_vault WHERE user_id=? ORDER BY service_name", (user_id,)).fetchall()
         return [dict(r) for r in rows]
 
+    def get_vault_item(self, vault_id: int) -> dict | None:
+        row = self._run("SELECT id, user_id, service_name, portal_url, username, password, notes, created_at FROM credentials_vault WHERE id=?", (vault_id,)).fetchone()
+        return dict(row) if row else None
+
     def add_vault_item(self, user_id: str, service_name: str, portal_url: str, username: str, password: str, notes: str = "") -> int:
         cur = self._run(
             "INSERT INTO credentials_vault (user_id, service_name, portal_url, username, password, notes, created_at) VALUES (?,?,?,?,?,?,?)",
             (user_id, service_name, portal_url, username, password, notes, time.time()),
         )
         return cur.lastrowid
+
+    def update_vault_item(self, vault_id: int, service_name: str, portal_url: str, username: str, password: str | None = None, notes: str = "") -> None:
+        if password:
+            self._run(
+                "UPDATE credentials_vault SET service_name=?, portal_url=?, username=?, password=?, notes=? WHERE id=?",
+                (service_name, portal_url, username, password, notes, vault_id),
+            )
+        else:
+            self._run(
+                "UPDATE credentials_vault SET service_name=?, portal_url=?, username=?, notes=? WHERE id=?",
+                (service_name, portal_url, username, notes, vault_id),
+            )
 
     def delete_vault_item(self, vault_id: int) -> None:
         self._run("DELETE FROM credentials_vault WHERE id=?", (vault_id,))

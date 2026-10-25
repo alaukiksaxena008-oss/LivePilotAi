@@ -110,6 +110,21 @@ class VaultIn(BaseModel):
     notes: str = ""
 
 
+class VaultUpdateIn(BaseModel):
+    service_name: str
+    portal_url: str
+    username: str
+    password: str | None = None
+    notes: str = ""
+
+
+class TaskUpdateIn(BaseModel):
+    title: str
+    target_url: str = ""
+    priority: str = "MEDIUM"
+    due_date: str = ""
+
+
 def _payload(goal_id: str, r) -> dict:
     return {"goal_id": goal_id, "status": r.status, "answer": r.answer, "question": r.question, "steps": r.steps}
 
@@ -168,6 +183,12 @@ async def remove_task(task_id: int):
     return {"deleted": task_id}
 
 
+@app.put("/tasks/{task_id}")
+async def update_task(task_id: int, body: TaskUpdateIn):
+    app.state.db.update_task(task_id, body.title, body.target_url, body.priority, body.due_date)
+    return {"id": task_id, "status": "updated"}
+
+
 # ---------- Profiles (Personal Data for Form Filling) ----------
 @app.get("/profile")
 async def get_user_profile(user_id: str = "riya"):
@@ -189,10 +210,24 @@ async def get_user_vault(user_id: str = "riya"):
     return app.state.db.list_vault(user_id)
 
 
+@app.get("/vault/{vault_id}")
+async def get_vault_item(vault_id: int):
+    item = app.state.db.get_vault_item(vault_id)
+    if not item:
+        raise HTTPException(404, "Vault item not found")
+    return item
+
+
 @app.post("/vault")
 async def add_user_vault(body: VaultIn):
     vid = app.state.db.add_vault_item(body.user_id, body.service_name, body.portal_url, body.username, body.password, body.notes)
     return {"id": vid, "status": "added"}
+
+
+@app.put("/vault/{vault_id}")
+async def update_user_vault(vault_id: int, body: VaultUpdateIn):
+    app.state.db.update_vault_item(vault_id, body.service_name, body.portal_url, body.username, body.password, body.notes)
+    return {"id": vault_id, "status": "updated"}
 
 
 @app.delete("/vault/{vault_id}")

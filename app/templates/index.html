@@ -821,6 +821,104 @@
     </div>
   </div>
 
+  <!-- ==================== EDIT VAULT CREDENTIAL MODAL ==================== -->
+  <div id="edit-vault-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="card rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#e6f5f5] text-[#0E7979] flex items-center justify-center font-bold">
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Edit Portal Credential</h3>
+            <p class="text-[11px] text-slate-500">Update saved logins for autonomous agent access</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeEditVaultModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <form onsubmit="handleEditVault(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="ev-id" />
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Service / Portal Name *</label>
+          <input type="text" id="ev-service" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Portal Website URL</label>
+          <input type="url" id="ev-url" placeholder="https://..." class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Username / ID *</label>
+            <input type="text" id="ev-username" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="ev-password" placeholder="••••••••" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 pr-8 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+              <button type="button" onclick="togglePasswordVisibility('ev-password')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Notes / Security hints</label>
+          <input type="text" id="ev-notes" placeholder="e.g. Account ref #, primary login" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-[#0E7979]/20" />
+        </div>
+        <div class="pt-2 flex justify-between items-center">
+          <button type="button" onclick="deleteCurrentVaultModalItem()" class="text-rose-600 hover:underline font-semibold flex items-center gap-1">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete
+          </button>
+          <div class="flex gap-2">
+            <button type="button" onclick="closeEditVaultModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100">Cancel</button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-[#0E7979] text-white font-semibold hover:bg-[#0b5e5e] shadow-sm">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== EDIT TASK MODAL ==================== -->
+  <div id="edit-task-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="card rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-sm font-bold text-slate-900">Edit Task Details</h3>
+        <button type="button" onclick="closeEditTaskModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form onsubmit="handleEditTask(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="et-id" />
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Task Title</label>
+          <input type="text" id="et-title" required class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Target Portal URL (optional)</label>
+          <input type="url" id="et-url" placeholder="https://..." class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Priority</label>
+            <select id="et-priority" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium">
+              <option value="URGENT">URGENT (Top)</option>
+              <option value="HIGH">HIGH</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="LOW">LOW</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Due Date</label>
+            <input type="text" id="et-due" placeholder="Today 8:00 PM" class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 font-medium" />
+          </div>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeEditTaskModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-[#0E7979] text-white font-semibold hover:bg-[#0b5e5e]">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ==================== JAVASCRIPT ==================== -->
   <script>
     // Current Active User (null by default; asks for login on page open)
@@ -1161,8 +1259,11 @@
 
       container.innerHTML = tasks.map(t => `
         <div class="p-3.5 rounded-xl border-l-4 ${bColors[t.priority] || 'border-l-slate-300'} bg-slate-100/70 hover:bg-slate-200/50 transition flex items-center justify-between gap-3 text-xs">
-          <div class="min-w-0 flex-1">
-            <p class="font-bold text-slate-900 truncate">${escapeHtml(t.title)}</p>
+          <div onclick="openEditTaskModal(${t.id})" class="min-w-0 flex-1 cursor-pointer group">
+            <p class="font-bold text-slate-900 group-hover:text-[#0E7979] transition truncate flex items-center gap-1.5">
+              ${escapeHtml(t.title)}
+              <span class="opacity-0 group-hover:opacity-100 transition text-[10px] text-[#0E7979] font-medium">✎ Edit</span>
+            </p>
             <div class="flex items-center gap-2 mt-1">
               <span class="text-[10px] text-slate-500">${t.due_date || 'No due date'}</span>
               ${t.target_url ? `<span class="text-[10px] font-mono text-[#0E7979] truncate max-w-xs">🔗 ${escapeHtml(t.target_url)}</span>` : ''}
@@ -1315,18 +1416,131 @@
         return;
       }
       list.innerHTML = items.map(v => `
-        <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-xs hover:border-[#0E7979]/40 transition">
+        <div onclick="openEditVaultModal(${v.id})" class="p-3 bg-slate-100 hover:bg-[#e6f5f5]/70 hover:border-[#0E7979] rounded-xl border border-slate-200 flex items-center justify-between text-xs transition cursor-pointer group shadow-xs">
           <div class="min-w-0 flex-1">
-            <p class="font-bold text-slate-900 truncate">${escapeHtml(v.service_name)}</p>
+            <div class="flex items-center gap-1.5">
+              <p class="font-bold text-slate-900 group-hover:text-[#0E7979] transition truncate">${escapeHtml(v.service_name)}</p>
+              <span class="opacity-0 group-hover:opacity-100 transition text-[10px] text-[#0E7979] font-medium">✎ Edit</span>
+            </div>
             <p class="text-[11px] text-slate-500 font-mono mt-0.5 truncate">${escapeHtml(v.username)} • ${v.password_masked || '••••••••'}</p>
             ${v.portal_url ? `<p class="text-[10px] text-[#0E7979] font-mono truncate mt-0.5">${escapeHtml(v.portal_url)}</p>` : ''}
           </div>
-          <button onclick="deleteVaultItem(${v.id})" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-500 shrink-0 ml-2" title="Delete credential">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-          </button>
+          <div class="flex items-center gap-1 shrink-0 ml-2">
+            <button type="button" onclick="event.stopPropagation(); openEditVaultModal(${v.id})" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-[#0E7979] hover:bg-white rounded-lg transition" title="Edit Credential">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" onclick="event.stopPropagation(); deleteVaultItem(${v.id})" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition" title="Delete credential">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         </div>
       `).join('');
       lucide.createIcons();
+    }
+
+    async function openEditVaultModal(id) {
+      try {
+        const res = await fetch(`/vault/${id}`);
+        if (!res.ok) throw new Error("Could not fetch credential");
+        const v = await res.json();
+        document.getElementById("ev-id").value = v.id;
+        document.getElementById("ev-service").value = v.service_name || "";
+        document.getElementById("ev-url").value = v.portal_url || "";
+        document.getElementById("ev-username").value = v.username || "";
+        document.getElementById("ev-password").value = v.password || "";
+        document.getElementById("ev-notes").value = v.notes || "";
+        document.getElementById("edit-vault-modal").classList.remove("hidden");
+        document.getElementById("ev-service").focus();
+        lucide.createIcons();
+      } catch (err) {
+        alert("Error loading credential: " + err);
+      }
+    }
+
+    function closeEditVaultModal() {
+      document.getElementById("edit-vault-modal").classList.add("hidden");
+    }
+
+    async function handleEditVault(e) {
+      e.preventDefault();
+      const id = document.getElementById("ev-id").value;
+      const service_name = document.getElementById("ev-service").value.trim();
+      const portal_url = document.getElementById("ev-url").value.trim();
+      const username = document.getElementById("ev-username").value.trim();
+      const password = document.getElementById("ev-password").value;
+      const notes = document.getElementById("ev-notes").value.trim();
+
+      try {
+        const res = await fetch(`/vault/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ service_name, portal_url, username, password, notes })
+        });
+        if (res.ok) {
+          closeEditVaultModal();
+          loadVaultItems();
+        } else {
+          alert("Failed to update credential.");
+        }
+      } catch (err) {
+        alert("Error saving credential: " + err);
+      }
+    }
+
+    function deleteCurrentVaultModalItem() {
+      const id = document.getElementById("ev-id").value;
+      if (id) {
+        closeEditVaultModal();
+        deleteVaultItem(id);
+      }
+    }
+
+    function togglePasswordVisibility(inputId) {
+      const el = document.getElementById(inputId);
+      if (el) {
+        el.type = el.type === "password" ? "text" : "password";
+      }
+    }
+
+    function openEditTaskModal(id) {
+      const task = (cachedTasks || []).find(t => t.id === id);
+      if (!task) return;
+      document.getElementById("et-id").value = task.id;
+      document.getElementById("et-title").value = task.title || "";
+      document.getElementById("et-url").value = task.target_url || "";
+      document.getElementById("et-priority").value = task.priority || "MEDIUM";
+      document.getElementById("et-due").value = task.due_date || "";
+      document.getElementById("edit-task-modal").classList.remove("hidden");
+      document.getElementById("et-title").focus();
+    }
+
+    function closeEditTaskModal() {
+      document.getElementById("edit-task-modal").classList.add("hidden");
+    }
+
+    async function handleEditTask(e) {
+      e.preventDefault();
+      const id = document.getElementById("et-id").value;
+      const title = document.getElementById("et-title").value.trim();
+      const target_url = document.getElementById("et-url").value.trim();
+      const priority = document.getElementById("et-priority").value;
+      const due_date = document.getElementById("et-due").value.trim();
+
+      try {
+        const res = await fetch(`/tasks/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, target_url, priority, due_date })
+        });
+        if (res.ok) {
+          closeEditTaskModal();
+          loadUserTasks();
+        } else {
+          alert("Failed to update task.");
+        }
+      } catch (err) {
+        alert("Error saving task: " + err);
+      }
     }
 
     async function deleteVaultItem(id) {
