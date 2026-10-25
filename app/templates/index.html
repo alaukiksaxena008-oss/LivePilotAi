@@ -150,7 +150,7 @@
   <div id="app-shell" class="hidden min-h-screen flex w-full">
 
   <!-- ==================== SIDEBAR ==================== -->
-  <aside class="w-72 card border-r border-slate-200/80 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
+  <aside class="w-72 card border-r border-slate-200/80 flex flex-col justify-between p-4 min-h-screen shrink-0 sticky top-0 h-screen overflow-y-auto custom-scrollbar">
     <div>
       <!-- Brand Logo -->
       <div class="flex items-center gap-2.5 px-2 py-3 mb-6">
@@ -184,6 +184,36 @@
           <span class="whitespace-nowrap">Activity History</span>
         </button>
       </nav>
+
+      <!-- Calendar Schedule Widget on Left Pane -->
+      <div class="mt-4 pt-3 border-t border-slate-200/80">
+        <div class="flex items-center justify-between px-1 mb-2">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#0E7979]"></i>
+            <span class="text-[11px] font-bold text-slate-800 tracking-tight" id="calendar-month-year">October 2026</span>
+          </div>
+          <div class="flex items-center gap-0.5">
+            <button type="button" onclick="changeCalendarMonth(-1)" class="p-1 rounded-md hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition" title="Previous Month">
+              <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" onclick="resetCalendarToToday()" class="text-[10px] text-[#0E7979] hover:underline px-1 font-semibold" title="Jump to Today">Today</button>
+            <button type="button" onclick="changeCalendarMonth(1)" class="p-1 rounded-md hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition" title="Next Month">
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Day Names Header -->
+        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-slate-400 mb-1">
+          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+        </div>
+
+        <!-- Calendar Days Grid -->
+        <div id="calendar-days-grid" class="grid grid-cols-7 gap-1 text-center"></div>
+
+        <!-- Selected Date Schedule Preview -->
+        <div id="calendar-schedule-preview" class="mt-2.5 p-2 rounded-xl bg-slate-100/90 border border-slate-200 text-[11px]"></div>
+      </div>
     </div>
 
     <!-- Active User & Account Switcher -->
@@ -1078,6 +1108,7 @@
       loadVaultItems();
       loadChatHistory();
       loadToolAudit();
+      renderCalendar();
     }
 
     // Global Caches for Instant Live Search
@@ -1101,6 +1132,7 @@
         } else {
           renderTasksList(cachedTasks);
         }
+        renderCalendar();
       } catch (err) {
         console.error("Failed to load tasks:", err);
       }
@@ -1302,6 +1334,189 @@
         await fetch(`/vault/${id}`, { method: 'DELETE' });
         loadVaultItems();
       }
+    }
+
+    // ==================== CALENDAR SCHEDULE WIDGET (LEFT PANE) ====================
+    let calendarViewDate = new Date();
+    let selectedCalendarDateKey = null;
+
+    function parseTaskDueDate(dueDateStr) {
+      if (!dueDateStr) return null;
+      const str = dueDateStr.toLowerCase().trim();
+      const now = new Date();
+      let d = null;
+      if (str.includes("today")) {
+        d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      } else if (str.includes("tomorrow")) {
+        d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      } else {
+        const match = str.match(/in\s+(\d+)\s+day/);
+        if (match) {
+          d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + parseInt(match[1]));
+        } else {
+          const parsed = new Date(dueDateStr);
+          if (!isNaN(parsed.getTime())) {
+            d = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+          }
+        }
+      }
+      if (!d) return null;
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function changeCalendarMonth(offset) {
+      calendarViewDate.setMonth(calendarViewDate.getMonth() + offset);
+      renderCalendar();
+    }
+
+    function resetCalendarToToday() {
+      calendarViewDate = new Date();
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      selectedCalendarDateKey = `${y}-${m}-${d}`;
+      renderCalendar();
+    }
+
+    function selectCalendarDate(dateKey) {
+      selectedCalendarDateKey = (selectedCalendarDateKey === dateKey) ? null : dateKey;
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendar-days-grid");
+      const titleEl = document.getElementById("calendar-month-year");
+      const previewEl = document.getElementById("calendar-schedule-preview");
+      if (!grid || !titleEl) return;
+
+      const year = calendarViewDate.getFullYear();
+      const monthIndex = calendarViewDate.getMonth();
+
+      titleEl.textContent = calendarViewDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+
+      // Build task map for current active user
+      const scheduledMap = {};
+      (cachedTasks || []).forEach(t => {
+        const k = parseTaskDueDate(t.due_date);
+        if (k) {
+          if (!scheduledMap[k]) scheduledMap[k] = [];
+          scheduledMap[k].push(t);
+        }
+      });
+
+      const today = new Date();
+      const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+      // Default selection to today if none selected
+      if (!selectedCalendarDateKey) {
+        selectedCalendarDateKey = todayKey;
+      }
+
+      const firstDay = new Date(year, monthIndex, 1).getDay(); // 0 is Sunday
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, monthIndex, 0).getDate();
+
+      let cellsHtml = '';
+
+      // Previous month days
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const dNum = daysInPrevMonth - i;
+        cellsHtml += `<div class="py-1 text-[10px] text-slate-300 font-medium select-none text-center">${dNum}</div>`;
+      }
+
+      // Current month days
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isToday = dateKey === todayKey;
+        const isSelected = dateKey === selectedCalendarDateKey;
+        const tasksForDay = scheduledMap[dateKey] || [];
+        const hasScheduled = tasksForDay.length > 0;
+        const hasUrgent = tasksForDay.some(t => t.priority === 'URGENT');
+
+        let cellClasses = "py-1 text-[11px] rounded-lg transition relative cursor-pointer flex flex-col items-center justify-center font-medium ";
+        let dotHtml = '';
+
+        if (isSelected) {
+          cellClasses += "bg-[#0E7979] text-white font-bold shadow-xs";
+          if (hasScheduled) {
+            dotHtml = `<span class="w-1.5 h-1.5 rounded-full bg-white absolute bottom-0.5"></span>`;
+          }
+        } else if (hasScheduled) {
+          cellClasses += hasUrgent
+            ? "bg-rose-50 text-rose-700 font-bold border border-rose-200/80 hover:bg-rose-100"
+            : "bg-[#e6f5f5] text-[#0E7979] font-bold border border-teal-200 hover:bg-[#d5eeee]";
+          dotHtml = `<span class="w-1.5 h-1.5 rounded-full ${hasUrgent ? 'bg-rose-500' : 'bg-[#0E7979]'} absolute bottom-0.5"></span>`;
+        } else if (isToday) {
+          cellClasses += "border border-[#0E7979] text-[#0E7979] font-bold hover:bg-teal-50/50";
+        } else {
+          cellClasses += "text-slate-700 hover:bg-slate-200/60";
+        }
+
+        const taskCountTooltip = hasScheduled ? `${tasksForDay.length} task(s) scheduled: ${tasksForDay.map(t => t.title).join(', ')}` : '';
+
+        cellsHtml += `
+          <button type="button" onclick="selectCalendarDate('${dateKey}')" class="${cellClasses}" title="${escapeHtml(taskCountTooltip)}">
+            <span>${d}</span>
+            ${dotHtml}
+          </button>
+        `;
+      }
+
+      // Next month padding to make full 7-col rows
+      const totalRendered = firstDay + daysInMonth;
+      const remaining = (7 - (totalRendered % 7)) % 7;
+      for (let i = 1; i <= remaining; i++) {
+        cellsHtml += `<div class="py-1 text-[10px] text-slate-300 font-medium select-none text-center">${i}</div>`;
+      }
+
+      grid.innerHTML = cellsHtml;
+
+      // Render Schedule Preview for selected date
+      if (previewEl) {
+        const selectedTasks = scheduledMap[selectedCalendarDateKey] || [];
+        const [sY, sM, sD] = (selectedCalendarDateKey || todayKey).split('-');
+        const dateObj = new Date(parseInt(sY), parseInt(sM) - 1, parseInt(sD));
+        const friendlyDate = dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        const isSelectedToday = selectedCalendarDateKey === todayKey;
+
+        if (selectedTasks.length > 0) {
+          previewEl.classList.remove('hidden');
+          previewEl.innerHTML = `
+            <div class="flex items-center justify-between pb-1.5 border-b border-slate-200/80 mb-1.5">
+              <span class="font-bold text-slate-800 text-[11px]">
+                ${friendlyDate} ${isSelectedToday ? '(Today)' : ''}
+              </span>
+              <span class="text-[10px] font-bold text-[#0E7979] bg-[#e6f5f5] px-1.5 py-0.2 rounded-full">
+                ${selectedTasks.length} scheduled
+              </span>
+            </div>
+            <div class="space-y-1 max-h-24 overflow-y-auto custom-scrollbar pr-0.5">
+              ${selectedTasks.map(t => `
+                <div class="flex items-start justify-between gap-1 text-[10px] p-1 rounded-md bg-white border border-slate-200/70">
+                  <span class="font-medium text-slate-800 truncate" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</span>
+                  <span class="text-[9px] font-bold px-1 rounded shrink-0 ${t.priority === 'URGENT' ? 'bg-rose-100 text-rose-700' : t.priority === 'HIGH' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}">${t.priority}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          previewEl.classList.remove('hidden');
+          previewEl.innerHTML = `
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="text-slate-500">${friendlyDate}: No tasks</span>
+              <button type="button" onclick="openNewTaskModal()" class="text-[#0E7979] font-bold hover:underline flex items-center gap-0.5">
+                <i data-lucide="plus" class="w-2.5 h-2.5"></i> Add
+              </button>
+            </div>
+          `;
+        }
+      }
+
+      lucide.createIcons();
     }
 
     // Activity & Execution History Log (Scoped per Active User)
