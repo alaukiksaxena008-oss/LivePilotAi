@@ -150,7 +150,7 @@
   <div id="app-shell" class="hidden min-h-screen flex w-full">
 
   <!-- ==================== SIDEBAR ==================== -->
-  <aside class="w-72 card border-r border-slate-200/80 flex flex-col justify-between p-4 min-h-screen shrink-0 sticky top-0 h-screen overflow-y-auto custom-scrollbar">
+  <aside class="w-72 card border-r border-slate-200/80 flex flex-col justify-between p-5 min-h-screen shrink-0 sticky top-0 h-screen">
     <div>
       <!-- Brand Logo -->
       <div class="flex items-center gap-2.5 px-2 py-3 mb-6">
@@ -184,36 +184,6 @@
           <span class="whitespace-nowrap">Activity History</span>
         </button>
       </nav>
-
-      <!-- Calendar Schedule Widget on Left Pane -->
-      <div class="mt-4 pt-3 border-t border-slate-200/80">
-        <div class="flex items-center justify-between px-1 mb-2">
-          <div class="flex items-center gap-1.5">
-            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#0E7979]"></i>
-            <span class="text-[11px] font-bold text-slate-800 tracking-tight" id="calendar-month-year">October 2026</span>
-          </div>
-          <div class="flex items-center gap-0.5">
-            <button type="button" onclick="changeCalendarMonth(-1)" class="p-1 rounded-md hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition" title="Previous Month">
-              <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
-            </button>
-            <button type="button" onclick="resetCalendarToToday()" class="text-[10px] text-[#0E7979] hover:underline px-1 font-semibold" title="Jump to Today">Today</button>
-            <button type="button" onclick="changeCalendarMonth(1)" class="p-1 rounded-md hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition" title="Next Month">
-              <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Day Names Header -->
-        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-slate-400 mb-1">
-          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-        </div>
-
-        <!-- Calendar Days Grid -->
-        <div id="calendar-days-grid" class="grid grid-cols-7 gap-1 text-center"></div>
-
-        <!-- Selected Date Schedule Preview -->
-        <div id="calendar-schedule-preview" class="mt-2.5 p-2 rounded-xl bg-slate-100/90 border border-slate-200 text-[11px]"></div>
-      </div>
     </div>
 
     <!-- Active User & Account Switcher -->
@@ -412,6 +382,44 @@
                   <i data-lucide="plus" class="w-3 h-3"></i> New Watcher
                 </button>
               </div>
+            </div>
+
+            <!-- Calendar Schedule Widget under Background Watchers -->
+            <div class="card p-6 rounded-2xl shadow-xs space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200/80">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-[#e6f5f5] text-[#0E7979] flex items-center justify-center font-bold">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-900">Task Schedule & Deadlines</h3>
+                    <p class="text-[11px] text-slate-500">Dates marked with scheduled tasks</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-slate-800" id="calendar-month-year">October 2026</span>
+                  <div class="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                    <button type="button" onclick="changeCalendarMonth(-1)" class="p-1 rounded-md hover:bg-white text-slate-500 hover:text-slate-900 transition" title="Previous Month">
+                      <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button type="button" onclick="resetCalendarToToday()" class="text-[10px] text-[#0E7979] hover:underline px-1.5 font-bold" title="Jump to Today">Today</button>
+                    <button type="button" onclick="changeCalendarMonth(1)" class="p-1 rounded-md hover:bg-white text-slate-500 hover:text-slate-900 transition" title="Next Month">
+                      <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Day Names Header -->
+              <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400">
+                <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+              </div>
+
+              <!-- Calendar Days Grid -->
+              <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5 text-center"></div>
+
+              <!-- Selected Date Schedule Preview -->
+              <div id="calendar-schedule-preview" class="p-3 rounded-xl bg-slate-100/90 border border-slate-200 text-xs"></div>
             </div>
           </div>
         </div>
@@ -1610,7 +1618,7 @@
       const year = calendarViewDate.getFullYear();
       const monthIndex = calendarViewDate.getMonth();
 
-      titleEl.textContent = calendarViewDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      titleEl.textContent = calendarViewDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
       // Build task map for current active user
       const scheduledMap = {};
@@ -1639,7 +1647,7 @@
       // Previous month days
       for (let i = firstDay - 1; i >= 0; i--) {
         const dNum = daysInPrevMonth - i;
-        cellsHtml += `<div class="py-1 text-[10px] text-slate-300 font-medium select-none text-center">${dNum}</div>`;
+        cellsHtml += `<div class="py-2 text-xs text-slate-300 font-medium select-none text-center">${dNum}</div>`;
       }
 
       // Current month days
@@ -1651,21 +1659,21 @@
         const hasScheduled = tasksForDay.length > 0;
         const hasUrgent = tasksForDay.some(t => t.priority === 'URGENT');
 
-        let cellClasses = "py-1 text-[11px] rounded-lg transition relative cursor-pointer flex flex-col items-center justify-center font-medium ";
+        let cellClasses = "py-2 text-xs rounded-xl transition relative cursor-pointer flex flex-col items-center justify-center font-medium ";
         let dotHtml = '';
 
         if (isSelected) {
           cellClasses += "bg-[#0E7979] text-white font-bold shadow-xs";
           if (hasScheduled) {
-            dotHtml = `<span class="w-1.5 h-1.5 rounded-full bg-white absolute bottom-0.5"></span>`;
+            dotHtml = `<span class="w-1.5 h-1.5 rounded-full bg-white absolute bottom-1"></span>`;
           }
         } else if (hasScheduled) {
           cellClasses += hasUrgent
-            ? "bg-rose-50 text-rose-700 font-bold border border-rose-200/80 hover:bg-rose-100"
+            ? "bg-rose-50 text-rose-700 font-bold border border-rose-200 hover:bg-rose-100"
             : "bg-[#e6f5f5] text-[#0E7979] font-bold border border-teal-200 hover:bg-[#d5eeee]";
-          dotHtml = `<span class="w-1.5 h-1.5 rounded-full ${hasUrgent ? 'bg-rose-500' : 'bg-[#0E7979]'} absolute bottom-0.5"></span>`;
+          dotHtml = `<span class="w-1.5 h-1.5 rounded-full ${hasUrgent ? 'bg-rose-500' : 'bg-[#0E7979]'} absolute bottom-1"></span>`;
         } else if (isToday) {
-          cellClasses += "border border-[#0E7979] text-[#0E7979] font-bold hover:bg-teal-50/50";
+          cellClasses += "border-2 border-[#0E7979] text-[#0E7979] font-bold hover:bg-teal-50/50";
         } else {
           cellClasses += "text-slate-700 hover:bg-slate-200/60";
         }
